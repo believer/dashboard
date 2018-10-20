@@ -8,7 +8,11 @@ let make = (~isLast, ~item: GitHub.notification, _children) => {
       <div>
         <a
           className="link blue hover-hot-pink"
-          href={item.subject.url}
+          href={
+            item.subject.url
+            |> Js.String.replace("api.", "")
+            |> Js.String.replace("repos/", "")
+          }
           target="_blank">
           {item.subject.title |> Utils.str}
         </a>
