@@ -1,44 +1,52 @@
-/* State declaration */
 type state = {
-  count: int,
-  show: bool,
+  displayGit: bool,
+  displayTrello: bool,
 };
 
-/* Action declaration */
-type action =
-  | Click
-  | Toggle;
+type company =
+  | GitHub
+  | Trello;
 
-/* Component template declaration.
-   Needs to be **after** state and action declarations! */
+type action =
+  | Display(company)
+  | Hide(company);
+
 let component = ReasonReact.reducerComponent("App");
 
-/* greeting and children are props. `children` isn't used, therefore ignored.
-   We ignore it by prepending it with an underscore */
-let make = (~greeting, _children) => {
-  /* spread the other default fields of component here and override a few */
+let make = _children => {
   ...component,
 
-  initialState: () => {count: 0, show: true},
+  initialState: () => {displayGit: true, displayTrello: true},
 
-  /* State transitions */
   reducer: (action, state) =>
     switch (action) {
-    | Click => ReasonReact.Update({...state, count: state.count + 1})
-    | Toggle => ReasonReact.Update({...state, show: !state.show})
+    | Display(GitHub) => ReasonReact.Update({...state, displayGit: true})
+    | Display(Trello) => ReasonReact.Update({...state, displayTrello: true})
+    | Hide(GitHub) => ReasonReact.Update({...state, displayGit: false})
+    | Hide(Trello) => ReasonReact.Update({...state, displayTrello: false})
     },
 
-  render: self => {
-    let message =
-      "You've clicked this " ++ string_of_int(self.state.count) ++ " times(s)";
-    <div>
-      <button onClick={_event => self.send(Click)}>
-        {ReasonReact.string(message)}
-      </button>
-      <button onClick={_event => self.send(Toggle)}>
-        {ReasonReact.string("Toggle greeting")}
-      </button>
-      {self.state.show ? ReasonReact.string(greeting) : ReasonReact.null}
-    </div>;
-  },
+  render: ({state, send}) =>
+    <div className="flex h-100">
+      <Navigation
+        displayGit={state.displayGit}
+        displayTrello={state.displayTrello}
+        toggleGit={
+          _ => send(state.displayGit ? Hide(GitHub) : Display(GitHub))
+        }
+        toggleTrello={
+          _ => send(state.displayTrello ? Hide(Trello) : Display(Trello))
+        }
+      />
+      {
+        true ?
+          <div className="w-100 flex flex-column flex-row-l pv4 ph5">
+            {state.displayGit ? <GitHubContainer /> : ReasonReact.null}
+            {state.displayTrello ? <TrelloContainer /> : ReasonReact.null}
+          </div> :
+          <div className="w-100 items-center flex justify-center">
+            {"Add config to settings" |> Utils.str}
+          </div>
+      }
+    </div>,
 };
