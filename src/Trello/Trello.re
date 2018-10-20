@@ -5,10 +5,13 @@ type notificationType =
   | UnknownType;
 
 type trelloList = {name: string};
+type trelloCard = {shortLink: string};
 
 type creator = {fullName: string};
 
 type notificationData = {
+  board: trelloList,
+  card: trelloCard,
   text: option(string),
   listAfter: option(trelloList),
   listBefore: option(trelloList),
@@ -27,8 +30,11 @@ module Decode = {
   open Json.Decode;
 
   let trelloList = json => {name: json |> field("name", string)};
+  let trelloCard = json => {shortLink: json |> field("shortLink", string)};
 
   let data = json => {
+    board: json |> field("board", trelloList),
+    card: json |> field("card", trelloCard),
     text: json |> optional(field("text", string)),
     listAfter: json |> optional(field("listAfter", trelloList)),
     listBefore: json |> optional(field("listBefore", trelloList)),

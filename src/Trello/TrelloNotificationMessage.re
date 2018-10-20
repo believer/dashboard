@@ -1,6 +1,6 @@
 let component = ReasonReact.statelessComponent("TrelloNotificationMessage");
 
-let make = (~isLast, ~text, ~name, ~date, ~icon, _children) => {
+let make = (~isLast, ~item: Trello.notification, ~text, ~icon, _children) => {
   ...component,
   render: _self =>
     <div className={Cn.make(["flex", "mb3"->Cn.ifTrue(!isLast)])}>
@@ -12,11 +12,30 @@ let make = (~isLast, ~text, ~name, ~date, ~icon, _children) => {
         icon === "arrow" ? <IconArrowRight className="mr4" /> : ReasonReact.null
       }
       <div>
-        <div className="mb2"> {text |> Utils.str} </div>
+        <div className="mb2 lh-copy"> {text |> Utils.str} </div>
         <div className="f6 light-silver">
-          {name ++ " " ++ {js|•|js} ++ " " |> Utils.str}
+          <a
+            className="link blue hover-hot-pink"
+            href={"https://trello.com/c/" ++ item.data.card.shortLink}
+            target="_blank">
+            {"Link" |> Utils.str}
+          </a>
           {
-            MomentRe.moment(date)
+            " "
+            ++ {js|•|js}
+            ++ " "
+            ++ item.data.board.name
+            ++ " "
+            ++ {js|•|js}
+            ++ " "
+            ++ item.creator.fullName
+            ++ " "
+            ++ {js|•|js}
+            ++ " "
+            |> Utils.str
+          }
+          {
+            MomentRe.moment(item.date)
             |> MomentRe.Moment.format("YYYY-MM-DD HH:mm")
             |> Utils.str
           }

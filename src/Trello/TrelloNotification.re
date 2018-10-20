@@ -6,10 +6,9 @@ let make = (~isLast, ~item: Trello.notification, _children) => {
     switch (item.data.listBefore, item.data.listAfter) {
     | (Some(before), Some(after)) =>
       <TrelloNotificationMessage
-        date={item.date}
         icon="arrow"
+        item
         isLast
-        name={item.creator.fullName}
         text={before.name ++ " -> " ++ after.name}
       />
     | (Some(_), None)
@@ -17,13 +16,7 @@ let make = (~isLast, ~item: Trello.notification, _children) => {
     | (None, None) =>
       switch (item.data.text) {
       | Some(text) =>
-        <TrelloNotificationMessage
-          date={item.date}
-          icon="message"
-          isLast
-          name={item.creator.fullName}
-          text
-        />
+        <TrelloNotificationMessage icon="message" isLast item text />
       | None => ReasonReact.null
       }
     },
