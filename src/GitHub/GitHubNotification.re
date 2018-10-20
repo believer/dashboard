@@ -1,9 +1,9 @@
 let component = ReasonReact.statelessComponent("GitHubNotification");
 
-let make = (~item: GitHub.notification, _children) => {
+let make = (~isLast, ~item: GitHub.notification, _children) => {
   ...component,
   render: _self =>
-    <div className="flex mb3">
+    <div className={Cn.make(["flex", "mb3"->Cn.ifTrue(!isLast)])}>
       <IconPullRequest className="mr4" />
       <div>
         <a

@@ -53,8 +53,12 @@ let make = _children => {
             | Loaded(notifications) =>
               Array.length(notifications) > 0 ?
                 notifications
-                |> Array.map((item: GitHub.notification) =>
-                     <GitHubNotification item key={item.id} />
+                |> Array.mapi((i, item: GitHub.notification) =>
+                     <GitHubNotification
+                       item
+                       isLast={Array.length(notifications) - 1 === i}
+                       key={item.id}
+                     />
                    )
                 |> ReasonReact.array :
                 <EmptyState />
