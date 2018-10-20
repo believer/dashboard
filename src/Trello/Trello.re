@@ -1,10 +1,18 @@
 type notificationType =
   | Mentioned
+  | Comment
+  | ChangeCard
   | UnknownType;
+
+type trelloList = {name: string};
 
 type creator = {fullName: string};
 
-type notificationData = {text: string};
+type notificationData = {
+  text: option(string),
+  listAfter: option(trelloList),
+  listBefore: option(trelloList),
+};
 
 type notification = {
   creator,
@@ -18,7 +26,13 @@ type notification = {
 module Decode = {
   open Json.Decode;
 
-  let data = json => {text: json |> field("text", string)};
+  let trelloList = json => {name: json |> field("name", string)};
+
+  let data = json => {
+    text: json |> optional(field("text", string)),
+    listAfter: json |> optional(field("listAfter", trelloList)),
+    listBefore: json |> optional(field("listBefore", trelloList)),
+  };
 
   let creator = json => {fullName: json |> field("fullName", string)};
 
@@ -31,6 +45,8 @@ module Decode = {
     type_:
       switch (json |> field("type", string)) {
       | "mentionedOnCard" => Mentioned
+      | "commentCard" => Comment
+      | "changeCard" => ChangeCard
       | _ => UnknownType
       },
   };

@@ -58,8 +58,12 @@ let make = _children => {
             | Loaded(notifications) =>
               Array.length(notifications) > 0 ?
                 notifications
-                |> Array.map((item: Trello.notification) =>
-                     <TrelloNotification item key={item.id} />
+                |> Array.mapi((i, item: Trello.notification) =>
+                     <TrelloNotification
+                       item
+                       isLast={Array.length(notifications) - 1 === i}
+                       key={item.id}
+                     />
                    )
                 |> ReasonReact.array :
                 <EmptyState />
