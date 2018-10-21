@@ -1,6 +1,7 @@
 const gulp = require('gulp')
 const uglify = require('gulp-uglify')
 const rename = require('gulp-rename')
+const gzip = require('gulp-gzip')
 const pump = require('pump')
 const clean = require('gulp-clean')
 const CacheBuster = require('gulp-cachebust')
@@ -13,6 +14,7 @@ const buildJs = cb => {
       gulp.src('dist/index.js'),
       uglify(),
       cachebust.resources(),
+      gzip({ append: false }),
       gulp.dest('dist'),
     ],
     cb
