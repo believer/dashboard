@@ -45,17 +45,12 @@ let make = _children => {
       ReasonReact.Update(Loaded(notifications))
     },
 
-  render: ({state}) => {
-    let hasTrelloConfig =
-      Storage.hasConfig("trello_username")
-      && Storage.hasConfig("trello_key")
-      && Storage.hasConfig("trello_token");
-
+  render: ({state}) =>
     <div className="w-100 w-50-l">
       <Header color="b--light-red" title="Trello" />
       <Card>
         {
-          hasTrelloConfig ?
+          Trello.Config.hasConfig ?
             switch (state) {
             | Error(_) =>
               <div className="tc light-red">
@@ -82,6 +77,5 @@ let make = _children => {
             <TrelloMissing />
         }
       </Card>
-    </div>;
-  },
+    </div>,
 };

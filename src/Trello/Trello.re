@@ -63,6 +63,11 @@ module Decode = {
 module Config = {
   open Dom.Storage;
 
+  let hasConfig =
+    Storage.hasConfig("trello_username")
+    && Storage.hasConfig("trello_key")
+    && Storage.hasConfig("trello_token");
+
   let interval =
     (
       switch (localStorage |> getItem("trello_interval")) {
@@ -75,7 +80,8 @@ module Config = {
 };
 
 let getNotifications = () => {
-  let request =
+  switch (Config.hasConfig) {
+  | true => {let request =
     Axios.makeConfigWithUrl(
       ~url=
         "https://api.trello.com/1/members/"
@@ -93,5 +99,8 @@ let getNotifications = () => {
     |> then_(response =>
          response##data |> Decode.decodeNotifications |> resolve
        )
-  );
+  )
+  }
+  | false => Js.Promise.resolve([||])
+  }
 };

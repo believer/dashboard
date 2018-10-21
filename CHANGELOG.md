@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.8.1 - 2018-10-21
+
+### Fixed
+
+- Prevent API calls when no tokens are set - #5
+
+---
+
 ## 0.8.0 - 2018-10-21
 
 ### Added
@@ -29,7 +37,7 @@
 
 ### Fixed
 
-- [GitHub] Added `If-None-Match` header
+- [GitHub] Added `If-None-Match` header - #4
 
 ---
 
@@ -49,7 +57,7 @@
 
 ### Added
 
-- Update interval in settings
+- Update interval in settings - #3
 
 ---
 
@@ -94,7 +102,7 @@
 
 ### Added
 
-- Settings page
+- Settings page - #1
 
 ---
 

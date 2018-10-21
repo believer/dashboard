@@ -65,6 +65,8 @@ module Decode = {
 module Config = {
   open Dom.Storage;
 
+  let hasConfig = Storage.hasConfig("github");
+
   let interval =
     (
       switch (localStorage |> getItem("github_interval")) {
@@ -76,22 +78,25 @@ module Config = {
     * 1000;
 };
 
-let getNotifications = () => {
-  let request =
-    Axios.makeConfigWithUrl(
-      ~url="https://api.github.com/notifications",
-      ~_method="GET",
-      ~headers={
-        "Authorization": "Token " ++ Storage.getConfig("github"),
-        "If-None-Match": "",
-      },
-      (),
-    );
+let getNotifications = () =>
+  Config.hasConfig ?
+    {
+      let request =
+        Axios.makeConfigWithUrl(
+          ~url="https://api.github.com/notifications",
+          ~_method="GET",
+          ~headers={
+            "Authorization": "Token " ++ Storage.getConfig("github"),
+            "If-None-Match": "",
+          },
+          (),
+        );
 
-  Js.Promise.(
-    Axios.request(request)
-    |> then_(response =>
-         response##data |> Decode.decodeNotifications |> resolve
-       )
-  );
-};
+      Js.Promise.(
+        Axios.request(request)
+        |> then_(response =>
+             response##data |> Decode.decodeNotifications |> resolve
+           )
+      );
+    } :
+    Js.Promise.resolve([||]);

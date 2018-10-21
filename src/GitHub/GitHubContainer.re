@@ -53,7 +53,7 @@ let make = _children => {
       <Header color="b--navy" title="GitHub" />
       <Card>
         {
-          Storage.hasConfig("github") ?
+          GitHub.Config.hasConfig ?
             switch (state) {
             | Error(_) =>
               <div className="tc light-red">
