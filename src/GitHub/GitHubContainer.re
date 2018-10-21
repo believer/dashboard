@@ -17,7 +17,10 @@ let make = _children => {
     self.send(NotificationsFetch);
 
     let intervalId =
-      Js.Global.setInterval(() => self.send(NotificationsFetch), 1000 * 60);
+      Js.Global.setInterval(
+        () => self.send(NotificationsFetch),
+        Storage.GitHub.config.interval,
+      );
     self.onUnmount(() => Js.Global.clearInterval(intervalId));
   },
 

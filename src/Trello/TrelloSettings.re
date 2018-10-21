@@ -4,15 +4,18 @@ module SettingsForm = {
   open Formality;
 
   type field =
+    | Interval
     | Username
     | Key
     | Token;
 
   type state = {
+    fetchInterval: string,
     token: string,
     username: string,
     key: string,
   };
+
   type message = string;
 
   module TokenField = {
@@ -60,10 +63,26 @@ module SettingsForm = {
     };
   };
 
+  module IntervalField = {
+    let update = (state, value) => {...state, fetchInterval: value};
+
+    let validator = {
+      field: Interval,
+      strategy: Strategy.OnFirstSuccessOrFirstBlur,
+      dependents: None,
+      validate: ({fetchInterval}) =>
+        switch (fetchInterval) {
+        | "" => Error("Token is required")
+        | _ => Ok(Valid)
+        },
+    };
+  };
+
   let validators = [
     TokenField.validator,
     UsernameField.validator,
     KeyField.validator,
+    IntervalField.validator,
   ];
 };
 
@@ -76,27 +95,17 @@ let make = _children => {
   render: _self =>
     <SettingsFormContainer
       initialState={
-        username:
-          switch (localStorage |> getItem("trello_username")) {
-          | Some(v) => v
-          | None => ""
-          },
-        key:
-          switch (localStorage |> getItem("trello_key")) {
-          | Some(v) => v
-          | None => ""
-          },
-        token:
-          switch (localStorage |> getItem("trello_token")) {
-          | Some(v) => v
-          | None => ""
-          },
+        fetchInterval: Storage.Trello.config.interval / 1000 |> string_of_int,
+        username: Storage.getConfig("trello_username"),
+        key: Storage.getConfig("trello_key"),
+        token: Storage.getConfig("trello_token"),
       }
       onSubmit={
         (state, form) => {
           localStorage |> setItem("trello_username", state.username);
           localStorage |> setItem("trello_key", state.key);
           localStorage |> setItem("trello_token", state.token);
+          localStorage |> setItem("trello_interval", state.fetchInterval);
 
           form.notifyOnSuccess(None);
         }
@@ -127,6 +136,17 @@ let make = _children => {
                  error={SettingsForm.Token->(form.result)}
                  label="Key"
                  id="key"
+                 help={
+                   Some([|
+                     "Generate a key "->Utils.str,
+                     <a
+                       className="link blue hover-hot-pink"
+                       href="https://trello.com/app-key"
+                       target="_blank">
+                       {"here" |> Utils.str}
+                     </a>,
+                   |])
+                 }
                  onChange={
                    event =>
                      form.change(
@@ -143,6 +163,17 @@ let make = _children => {
                  error={SettingsForm.Token->(form.result)}
                  label="Token"
                  id="token"
+                 help={
+                   Some([|
+                     "Generate a token "->Utils.str,
+                     <a
+                       className="link blue hover-hot-pink"
+                       href="https://trello.com/app-key"
+                       target="_blank">
+                       "here"->Utils.str
+                     </a>,
+                   |])
+                 }
                  onChange={
                    event =>
                      form.change(
@@ -154,6 +185,22 @@ let make = _children => {
                      )
                  }
                  value={form.state.token}
+               />
+               <Input
+                 error={SettingsForm.Token->(form.result)}
+                 label="Update interval (seconds)"
+                 id="fetchInterval"
+                 onChange={
+                   event =>
+                     form.change(
+                       SettingsForm.Interval,
+                       SettingsForm.IntervalField.update(
+                         form.state,
+                         event->ReactEvent.Form.target##value,
+                       ),
+                     )
+                 }
+                 value={form.state.fetchInterval}
                />
                {
                  switch (form.status) {

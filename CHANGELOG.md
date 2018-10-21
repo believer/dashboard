@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.6.0 - 2018-10-21
+
+### Added
+
+- Update interval in settings
+
 ## 0.5.1 - 2018-10-21
 
 ### Fixed

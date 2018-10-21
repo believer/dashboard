@@ -38,8 +38,9 @@ let make = _children => {
   },
 
   render: ({state}) =>
-    <div className="flex h-100">
+    <div className="flex">
       <Navigation />
+      <div style={ReactDOMRe.Style.make(~width="96px", ())} />
       {
         switch (state.route) {
         | Home => <Home />
