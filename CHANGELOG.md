@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.4.1 - 2018-10-21
+
+### Changed
+
+- Missing configuration information links to settings
+
+### Fixed
+
+- Error handling for Trello and GitHub
+
 ## 0.4.0 - 2018-10-21
 
 ### Added
