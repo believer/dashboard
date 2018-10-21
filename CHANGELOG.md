@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.2 - 2018-10-21
+
+### Fixed
+
+- Settings styling in desktop
+
 ## 0.4.1 - 2018-10-21
 
 ### Changed
