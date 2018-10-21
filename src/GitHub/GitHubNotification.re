@@ -4,8 +4,14 @@ let make = (~isLast, ~item: GitHub.notification, _children) => {
   ...component,
   render: _self =>
     <div className={Cn.make(["flex", "mb3"->Cn.ifTrue(!isLast)])}>
-      <IconPullRequest className="mr4" />
-      <div>
+      {
+        switch (item.subject.type_) {
+        | PullRequest => <IconPullRequest className="mr4" />
+        | Issue => <IconAlertCircle className="mr4" />
+        | _ => ReasonReact.null
+        }
+      }
+      <div className="lh-copy">
         <a
           className="link blue hover-hot-pink"
           href={
@@ -16,10 +22,16 @@ let make = (~isLast, ~item: GitHub.notification, _children) => {
           target="_blank">
           {item.subject.title |> Utils.str}
         </a>
-        <div className="f6 light-silver mt2">
+        <div className="f6 light-silver">
           {
-            MomentRe.moment(item.updatedAt)
-            |> MomentRe.Moment.format("YYYY-MM-DD HH:mm")
+            item.repository.name
+            ++ " "
+            ++ {js|•|js}
+            ++ " "
+            ++ (
+              MomentRe.moment(item.updatedAt)
+              |> MomentRe.Moment.format("YYYY-MM-DD HH:mm")
+            )
             |> Utils.str
           }
         </div>

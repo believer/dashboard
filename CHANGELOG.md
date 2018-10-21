@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.5.0 - 2018-10-21
+
+### Added
+
+- [GitHub] Repository name in notification
+- [GitHub] Issue icon
+
 ## 0.4.2 - 2018-10-21
 
 ### Fixed
