@@ -1,6 +1,7 @@
 type notificationType =
   | PullRequest
   | Issue
+  | VulnerabilityAlert
   | UnknownNotification;
 
 type notificationReason =
@@ -36,6 +37,7 @@ module Decode = {
       switch (json |> field("type", string)) {
       | "PullRequest" => PullRequest
       | "Issue" => Issue
+      | "RepositoryVulnerabilityAlert" => VulnerabilityAlert
       | _ => UnknownNotification
       },
     latestCommentUrl: json |> field("latest_comment_url", string),

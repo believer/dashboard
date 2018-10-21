@@ -7,6 +7,7 @@ let make = (~isLast, ~item: GitHub.notification, _children) => {
       {
         switch (item.subject.type_) {
         | PullRequest => <IconPullRequest className="mr4" />
+        | VulnerabilityAlert => <IconAlertCircle className="mr4 light-red" />
         | Issue => <IconAlertCircle className="mr4" />
         | _ => ReasonReact.null
         }
