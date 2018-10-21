@@ -19,7 +19,8 @@
     "@glennsl/bs-json",
     "bs-axios",
     "bs-moment",
-    "re-classnames"
+    "re-classnames",
+    "re-formality"
   ],
   "refmt": 3
 }

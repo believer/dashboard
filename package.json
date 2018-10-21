@@ -6,9 +6,9 @@
     "start": "bsb -make-world -w",
     "clean": "bsb -clean-world",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "fpack serve --development ./lib/js/src/Index.bs.js",
+    "dev": "fpack serve -o bundle --development ./lib/es6/src/Index.bs.js",
     "start:pack": "npm-run-all --parallel start dev",
-    "production": "rimraf dist && fpack -o dist --development ./lib/js/src/Index.bs.js && cp public/index.prod.html dist/index.html"
+    "production": "rimraf dist && fpack -o dist --development ./lib/es6/src/Index.bs.js && cp public/index.prod.html dist/index.html"
   },
   "keywords": [
     "BuckleScript"
@@ -21,6 +21,7 @@
     "bs-moment": "^0.3.1",
     "moment": "^2.22.2",
     "re-classnames": "^3.0.0",
+    "re-formality": "^1.0.0-beta.3",
     "react": "16.5.2",
     "react-dom": "16.5.2",
     "reason-react": "0.5.3"

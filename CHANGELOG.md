@@ -1,10 +1,16 @@
 # Changelog
 
+## 0.4.0 - 2018-10-21
+
+### Added
+
+- Settings page
+
 ## 0.3.0 - 2018-10-20
 
 ### Added
 
-- Added board name and link to Trello item
+- Board name and link to Trello item
 
 ## 0.2.3 - 2018-10-20
 
