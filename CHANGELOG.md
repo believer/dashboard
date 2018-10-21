@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.6.2 - 2018-10-21
+
+### Fixed
+
+- [GitHub] Added `If-None-Match` header
+
+---
+
 ## 0.6.1 - 2018-10-21
 
 ### Added

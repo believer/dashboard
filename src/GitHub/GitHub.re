@@ -67,7 +67,10 @@ let getNotifications = () => {
     Axios.makeConfigWithUrl(
       ~url="https://api.github.com/notifications",
       ~_method="GET",
-      ~headers={"Authorization": "Token " ++ Storage.getConfig("github")},
+      ~headers={
+        "Authorization": "Token " ++ Storage.getConfig("github"),
+        "If-None-Match": "",
+      },
       (),
     );
 
