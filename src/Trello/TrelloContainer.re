@@ -65,7 +65,7 @@ let make = _children => {
                 }
               </div>
             | Loading =>
-              <div className="tc light-silver"> {"Loading" |> Utils.str} </div>
+              <div className="tc mid-gray"> {"Loading" |> Utils.str} </div>
             | Loaded(notifications) =>
               Array.length(notifications) > 0 ?
                 notifications

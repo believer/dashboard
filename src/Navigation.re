@@ -4,7 +4,7 @@ let make = _children => {
   ...component,
   render: _self =>
     <div className="fixed left-0 top-0 bottom-0">
-      <div className="bg-blue white pa4 flex justify-center">
+      <div className="bg-navy white pa4 flex justify-center">
         <div className="bt bw1 b--dashed w2" />
       </div>
       <div

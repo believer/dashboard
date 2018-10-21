@@ -11,7 +11,7 @@ let make = _children => {
         <div>
           "Built by "->Utils.str
           <a
-            className="link blue hover-hot-pink"
+            className="link navy hover-hot-pink"
             href="https://github.com/believer"
             target="_blank">
             "@believer"->Utils.str

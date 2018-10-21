@@ -140,7 +140,7 @@ let make = _children => {
                    Some([|
                      "Generate a key "->Utils.str,
                      <a
-                       className="link blue hover-hot-pink"
+                       className="link navy hover-hot-pink"
                        href="https://trello.com/app-key"
                        target="_blank">
                        {"here" |> Utils.str}
@@ -167,7 +167,7 @@ let make = _children => {
                    Some([|
                      "Generate a token "->Utils.str,
                      <a
-                       className="link blue hover-hot-pink"
+                       className="link navy hover-hot-pink"
                        href="https://trello.com/app-key"
                        target="_blank">
                        "here"->Utils.str

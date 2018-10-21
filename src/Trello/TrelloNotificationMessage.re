@@ -13,9 +13,9 @@ let make = (~isLast, ~item: Trello.notification, ~text, ~icon, _children) => {
       }
       <div>
         <div className="mb2 lh-copy"> {text |> Utils.str} </div>
-        <div className="f6 light-silver">
+        <div className="f6 mid-gray">
           <a
-            className="link blue hover-hot-pink"
+            className="link navy hover-hot-pink"
             href={"https://trello.com/c/" ++ item.data.card.shortLink}
             target="_blank">
             {"Link" |> Utils.str}
