@@ -1,8 +1,10 @@
 type state =
+  | Error(string)
   | Loading
   | Loaded(array(GitHub.notification));
 
 type action =
+  | NotificationsError(string)
   | NotificationsFetch
   | NotificationsFetched(array(GitHub.notification));
 
@@ -23,6 +25,7 @@ let make = _children => {
 
   reducer: (action: action, _state: state) =>
     switch (action) {
+    | NotificationsError(err) => ReasonReact.Update(Error(err))
     | NotificationsFetch =>
       ReasonReact.UpdateWithSideEffects(
         Loading,
@@ -33,6 +36,7 @@ let make = _children => {
               |> then_(notifications =>
                    self.send(NotificationsFetched(notifications)) |> resolve
                  )
+              |> catch(_ => self.send(NotificationsError("err")) |> resolve)
               |> ignore
             )
         ),
@@ -48,6 +52,13 @@ let make = _children => {
         {
           Storage.hasConfig("github") ?
             switch (state) {
+            | Error(_) =>
+              <div className="tc light-red">
+                {
+                  "Something went wrong. Are the settings up to date?"
+                  |> Utils.str
+                }
+              </div>
             | Loading =>
               <div className="tc light-silver"> {"Loading" |> Utils.str} </div>
             | Loaded(notifications) =>
