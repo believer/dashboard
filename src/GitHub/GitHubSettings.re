@@ -55,7 +55,7 @@ let make = _children => {
   render: _self =>
     <SettingsFormContainer
       initialState={
-        fetchInterval: Storage.GitHub.config.interval / 1000 |> string_of_int,
+        fetchInterval: GitHub.Config.interval / 1000 |> string_of_int,
         token: Storage.getConfig("github"),
       }
       onSubmit={

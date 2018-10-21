@@ -95,7 +95,7 @@ let make = _children => {
   render: _self =>
     <SettingsFormContainer
       initialState={
-        fetchInterval: Storage.Trello.config.interval / 1000 |> string_of_int,
+        fetchInterval: Trello.Config.interval / 1000 |> string_of_int,
         username: Storage.getConfig("trello_username"),
         key: Storage.getConfig("trello_key"),
         token: Storage.getConfig("trello_token"),

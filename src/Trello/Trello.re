@@ -60,6 +60,20 @@ module Decode = {
   let decodeNotifications = json => json |> array(parseNotifications);
 };
 
+module Config = {
+  open Dom.Storage;
+
+  let interval =
+    (
+      switch (localStorage |> getItem("trello_interval")) {
+      | Some("") => 60
+      | Some(value) => int_of_string(value)
+      | None => 60
+      }
+    )
+    * 1000;
+};
+
 let getNotifications = () => {
   let request =
     Axios.makeConfigWithUrl(

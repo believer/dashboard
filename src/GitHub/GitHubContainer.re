@@ -19,7 +19,7 @@ let make = _children => {
     let intervalId =
       Js.Global.setInterval(
         () => self.send(NotificationsFetch),
-        Storage.GitHub.config.interval,
+        GitHub.Config.interval,
       );
     self.onUnmount(() => Js.Global.clearInterval(intervalId));
   },
