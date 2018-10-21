@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.8.0 - 2018-10-21
+
+### Added
+
+- PWA manifest
+
+---
+
 ## 0.7.0 - 2018-10-21
 
 ### Changed

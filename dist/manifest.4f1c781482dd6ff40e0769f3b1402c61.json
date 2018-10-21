@@ -1,0 +1,47 @@
+{
+  "icons": [
+    {
+      "src": "/icon_1024x1024.819d8810cdd4916835c061a745ddf1c1.png",
+      "sizes": "1024x1024",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon_512x512.1631ca04d203797f3c72601b58470162.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon_384x384.fc1d3b6aa08cf0439b949fe9d273fcca.png",
+      "sizes": "384x384",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon_256x256.1b8756032e809e571492d3a8d6072911.png",
+      "sizes": "256x256",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon_192x192.192cf987e6e9b5463fb46da8cc5e4773.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon_128x128.1194cc96414bbee2bce8b68da7dfb666.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon_96x96.6e9ca05af175d84afb3219768a306966.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    }
+  ],
+  "name": "Dashboard",
+  "short_name": "Dash",
+  "orientation": "portrait",
+  "display": "standalone",
+  "start_url": ".",
+  "description": "Tiny dashboard for Trello and GitHub notifications",
+  "background_color": "#001B44",
+  "theme_color": "#001B44"
+}
