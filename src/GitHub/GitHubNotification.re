@@ -30,10 +30,7 @@ let make = (~isLast, ~item: GitHub.notification, _children) => {
             ++ " "
             ++ {js|•|js}
             ++ " "
-            ++ (
-              MomentRe.moment(item.updatedAt)
-              |> MomentRe.Moment.format("YYYY-MM-DD HH:mm")
-            )
+            ++ DateFns.format(item.updatedAt, "YYYY-MM-DD HH:mm")
             |> Utils.str
           }
         </div>

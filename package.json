@@ -18,8 +18,7 @@
   "dependencies": {
     "@glennsl/bs-json": "3.0.0",
     "bs-axios": "0.0.39",
-    "bs-moment": "0.3.1",
-    "moment": "2.22.2",
+    "date-fns": "1.29.0",
     "re-classnames": "3.0.0",
     "re-formality": "1.0.0-beta.3",
     "react": "16.5.2",
@@ -34,6 +33,7 @@
     "gulp": "4.0.0",
     "gulp-cachebust": "0.0.10",
     "gulp-clean": "0.4.0",
+    "gulp-gzip": "^1.4.2",
     "gulp-rename": "1.4.0",
     "gulp-uglify": "3.0.1",
     "husky": "1.1.2",

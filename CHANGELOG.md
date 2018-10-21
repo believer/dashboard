@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.6.3 - 2018-10-21
+
+### Changed
+
+- Use date-fns instead of moment
+- Gzipped dist
+
+---
+
 ## 0.6.2 - 2018-10-21
 
 ### Fixed
