@@ -7,8 +7,8 @@ const CacheBuster = require('gulp-cachebust')
 
 const cachebust = new CacheBuster()
 
-gulp.task('build-js', cb => {
-  pump(
+const buildJs = cb => {
+  return pump(
     [
       gulp.src('dist/index.js'),
       uglify(),
@@ -17,10 +17,10 @@ gulp.task('build-js', cb => {
     ],
     cb
   )
-})
+}
 
-gulp.task('build-html', ['build-js'], cb => {
-  pump(
+const buildHtml = cb => {
+  return pump(
     [
       gulp.src('public/index.prod.html'),
       cachebust.references(),
@@ -29,10 +29,10 @@ gulp.task('build-html', ['build-js'], cb => {
     ],
     cb
   )
-})
+}
 
-gulp.task('cleanup', ['build-html', 'build-js'], cb => {
-  pump([gulp.src('dist/index.js'), clean()])
-})
+const cleanup = () => {
+  return pump([gulp.src('dist/index.js'), clean()])
+}
 
-gulp.task('build', ['build-html', 'cleanup'])
+gulp.task('build', gulp.series(buildJs, buildHtml, cleanup))

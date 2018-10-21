@@ -31,7 +31,7 @@
     "@commitlint/config-conventional": "7.1.2",
     "bs-platform": "4.0.6",
     "fpack": "0.6.6",
-    "gulp": "3.9.1",
+    "gulp": "4.0.0",
     "gulp-cachebust": "0.0.10",
     "gulp-clean": "0.4.0",
     "gulp-rename": "1.4.0",
