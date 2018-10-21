@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.7.0 - 2018-10-21
+
+### Changed
+
+- Use Webpack for production bundles. Bundle size went from 1.5 MB -> ~190 KB.
+
+---
+
 ## 0.6.3 - 2018-10-21
 
 ### Changed
