@@ -18,6 +18,7 @@ let make = (~isLast, ~item: GitHub.notification, _children) => {
             item.subject.url
             |> Js.String.replace("api.", "")
             |> Js.String.replace("repos/", "")
+            |> Js.String.replace("pulls/", "pull/")
           }
           target="_blank">
           {item.subject.title |> Utils.str}

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.5.1 - 2018-10-21
+
+### Fixed
+
+- [GitHub] Correct pull request URL
+
 ## 0.5.0 - 2018-10-21
 
 ### Added
