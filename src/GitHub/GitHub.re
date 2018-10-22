@@ -13,7 +13,7 @@ type notificationSubject = {
   title: string,
   url: string,
   type_: notificationType,
-  latestCommentUrl: string,
+  latestCommentUrl: option(string),
 };
 
 type gitRepo = {name: string};
@@ -40,7 +40,7 @@ module Decode = {
       | "RepositoryVulnerabilityAlert" => VulnerabilityAlert
       | _ => UnknownNotification
       },
-    latestCommentUrl: json |> field("latest_comment_url", string),
+    latestCommentUrl: json |> optional(field("latest_comment_url", string)),
   };
 
   let gitRepo = json => {name: json |> field("full_name", string)};

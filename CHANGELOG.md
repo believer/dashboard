@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.8.2 - 2018-10-22
+
+### Fixed
+
+- [GitHub] Latest comment url is nullable
+
+---
+
 ## 0.8.1 - 2018-10-21
 
 ### Fixed
