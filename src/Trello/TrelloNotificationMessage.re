@@ -14,17 +14,25 @@ let make = (~isLast, ~item: Trello.notification, ~text, ~icon, _children) => {
       <div>
         <div className="mb2 lh-copy"> {text |> Utils.str} </div>
         <div className="f6 mid-gray">
-          <a
-            className="link navy hover-hot-pink"
-            href={"https://trello.com/c/" ++ item.data.card.shortLink}
-            target="_blank">
-            {"Link" |> Utils.str}
-          </a>
           {
-            " "
-            ++ {js|•|js}
-            ++ " "
-            ++ item.data.board.name
+            switch (item.data.card) {
+            | Some(card) =>
+              <a
+                className="link navy hover-hot-pink"
+                href={"https://trello.com/c/" ++ card.shortLink}
+                target="_blank">
+                {"Link" |> Utils.str}
+              </a>
+            | None => ReasonReact.null
+            }
+          }
+          {
+            (
+              switch (item.data.board) {
+              | Some(b) => " " ++ {js|•|js} ++ " " ++ b.name
+              | None => ""
+              }
+            )
             ++ " "
             ++ {js|•|js}
             ++ " "

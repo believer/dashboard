@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.8.4 - 2018-10-24
+
+### Fixed
+
+- [Trello] Board and card types are optional. Does not exist in for example "addedToOrganization".
+
+---
+
 ## 0.8.3 - 2018-10-24
 
 ### Fixed
