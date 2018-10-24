@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.8.3 - 2018-10-24
+
+### Fixed
+
+- [GitHub] Add required permissions in settings
+
+---
+
 ## 0.8.2 - 2018-10-22
 
 ### Fixed

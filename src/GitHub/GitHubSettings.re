@@ -84,6 +84,12 @@ let make = _children => {
                        target="_blank">
                        "here"->Utils.str
                      </a>,
+                     ". It needs permission "->Utils.str,
+                     <strong> "notifications"->Utils.str </strong>,
+                     " and if you want to see private repos it also needs permission "
+                     ->Utils.str,
+                     <strong> "repo"->Utils.str </strong>,
+                     "."->Utils.str,
                    |])
                  }
                  id="token"
