@@ -38,7 +38,7 @@ let make =
           | _ => ReasonReact.null
           }
         }
-        <IconCheckCircle className="mt2 green" onClick=markAsRead />
+        <IconCheckCircle className="pointer mt2 green" onClick=markAsRead />
       </div>
       <div>
         <div className="mb2 lh-copy"> {text |> Utils.str} </div>

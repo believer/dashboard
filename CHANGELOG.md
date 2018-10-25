@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.12.1 - 2018-10-25
+
+### Fixed
+
+- [Trello] Mark as read cursor pointer
+
 ## 0.12.0 - 2018-10-25
 
 ### Added
