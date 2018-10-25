@@ -4,7 +4,7 @@ let make = (~href, children) => {
   ...component,
   render: _self =>
     <a
-      className="link navy hover-hot-pink"
+      className="link dark-blue hover-hot-pink"
       href
       onClick={
         e => {

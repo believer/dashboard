@@ -54,7 +54,7 @@ let make = _children => {
 
   render: ({state}) =>
     <div className="w-100 w-50-l mr4 mb4">
-      <Header color="b--navy" title="GitHub" />
+      <Header color="b--dark-blue" title="GitHub" />
       <Card>
         {
           GitHub.Config.hasConfig ?

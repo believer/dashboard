@@ -20,8 +20,8 @@ module.exports = {
       name: 'Dashboard',
       short_name: 'Dash',
       description: 'Tiny dashboard for Trello and GitHub notifications',
-      background_color: '#001B44',
-      theme_color: '#001B44',
+      background_color: '#00449E',
+      theme_color: '#00449E',
       icons: [
         {
           src: path.resolve('public/images/logo@3x.png'),

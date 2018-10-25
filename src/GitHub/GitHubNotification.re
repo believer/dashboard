@@ -15,7 +15,7 @@ let make = (~isLast, ~item: GitHub.notification, _children) => {
       }
       <div className="lh-copy">
         <a
-          className="link navy hover-hot-pink"
+          className="link dark-blue hover-hot-pink"
           href={
             item.subject.url
             |> Js.String.replace("api.", "")

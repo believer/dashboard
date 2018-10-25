@@ -18,7 +18,7 @@ let make = (~isLast, ~item: Trello.notification, ~text, ~icon, _children) => {
             switch (item.data.card) {
             | Some(card) =>
               <a
-                className="link navy hover-hot-pink"
+                className="link dark-blue hover-hot-pink"
                 href={"https://trello.com/c/" ++ card.shortLink}
                 target="_blank">
                 {"Link" |> Utils.str}
