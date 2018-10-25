@@ -6,6 +6,7 @@ let make = (~isLast, ~item: GitHub.notification, _children) => {
     <div className={Cn.make(["flex", "mb3"->Cn.ifTrue(!isLast)])}>
       {
         switch (item.subject.type_) {
+        | Commit => <IconGitCommit className="mr4" />
         | PullRequest => <IconPullRequest className="mr4" />
         | VulnerabilityAlert => <IconAlertCircle className="mr4 light-red" />
         | Issue => <IconAlertCircle className="mr4" />
