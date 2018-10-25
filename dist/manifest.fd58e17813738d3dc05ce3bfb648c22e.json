@@ -42,6 +42,6 @@
   "display": "standalone",
   "start_url": ".",
   "description": "Tiny dashboard for Trello and GitHub notifications",
-  "background_color": "#001B44",
-  "theme_color": "#001B44"
+  "background_color": "#00449E",
+  "theme_color": "#00449E"
 }

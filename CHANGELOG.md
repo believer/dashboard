@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.9.0 - 2018-10-25
+
+### Added
+
+- Number of notifications in document title
+
+### Fixed
+
+- [GitHub] Icon for commit
+
+### Changed
+
+- Navy color to dark blue
+
 ## 0.8.4 - 2018-10-24
 
 ### Fixed
