@@ -9,6 +9,7 @@ type notificationType =
 
 type trelloList = {name: string};
 type trelloCard = {
+  closed: bool,
   shortLink: string,
   name: string,
 };
@@ -37,6 +38,7 @@ module Decode = {
 
   let trelloList = json => {name: json |> field("name", string)};
   let trelloCard = json => {
+    closed: json |> field("closed", bool),
     shortLink: json |> field("shortLink", string),
     name: json |> field("name", string),
   };
@@ -99,18 +101,26 @@ module Config = {
     * 1000;
 };
 
+let trelloUrl = route =>
+  "https://api.trello.com/1"
+  ++ route
+  ++ "/?key="
+  ++ Storage.getConfig("trello_key")
+  ++ "&token="
+  ++ Storage.getConfig("trello_token");
+
 let getNotifications = () =>
   Config.hasConfig ?
     {
       let request =
         Axios.makeConfigWithUrl(
           ~url=
-            "https://api.trello.com/1/members/"
-            ++ Storage.getConfig("trello_username")
-            ++ "/notifications?filter=all&read_filter=unread&fields=all&limit=50&page=0&memberCreator=true&memberCreator_fields=avatarHash%2CfullName%2Cinitials%2Cusername&key="
-            ++ Storage.getConfig("trello_key")
-            ++ "&token="
-            ++ Storage.getConfig("trello_token"),
+            trelloUrl(
+              "/members/"
+              ++ Storage.getConfig("trello_username")
+              ++ "/notifications",
+            )
+            ++ "&filter=all&read_filter=unread&fields=all&limit=50&page=0&memberCreator=true&memberCreator_fields=avatarHash%2CfullName%2Cinitials%2Cusername&",
           ~_method="GET",
           (),
         );
@@ -125,3 +135,17 @@ let getNotifications = () =>
       );
     } :
     Js.Promise.resolve([||]);
+
+let markNotificationAsRead = id => {
+  let request =
+    Axios.makeConfigWithUrl(
+      ~url=trelloUrl("/notifications/" ++ id),
+      ~_method="PUT",
+      ~data={"unread": false},
+      (),
+    );
+
+  Js.Promise.(
+    Axios.request(request) |> then_(response => response |> resolve)
+  );
+};

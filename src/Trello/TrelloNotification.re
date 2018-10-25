@@ -1,6 +1,6 @@
 let component = ReasonReact.statelessComponent("TrelloNotification");
 
-let make = (~isLast, ~item: Trello.notification, _children) => {
+let make = (~isLast, ~item: Trello.notification, ~markAsRead, _children) => {
   ...component,
   render: _self =>
     switch (item.data.listBefore, item.data.listAfter) {
@@ -9,6 +9,7 @@ let make = (~isLast, ~item: Trello.notification, _children) => {
         icon="arrow"
         item
         isLast
+        markAsRead
         text={before.name ++ " -> " ++ after.name}
       />
     | (Some(_), None)
@@ -16,8 +17,27 @@ let make = (~isLast, ~item: Trello.notification, _children) => {
     | (None, None) =>
       switch (item.data.text) {
       | Some(text) =>
-        <TrelloNotificationMessage icon="message" isLast item text />
-      | None => ReasonReact.null
+        <TrelloNotificationMessage
+          icon="message"
+          isLast
+          item
+          markAsRead
+          text
+        />
+      | None =>
+        switch (item.data.card) {
+        | Some(card) =>
+          card.closed ?
+            <TrelloNotificationMessage
+              icon="archived"
+              isLast
+              item
+              markAsRead
+              text={card.name}
+            /> :
+            ReasonReact.null
+        | None => ReasonReact.null
+        }
       }
     },
 };

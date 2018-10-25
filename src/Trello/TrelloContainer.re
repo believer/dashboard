@@ -4,6 +4,7 @@ type state =
   | Loaded(array(Trello.notification));
 
 type action =
+  | MarkAsRead(string)
   | NotificationsError(string)
   | NotificationsFetch
   | NotificationsFetched(array(Trello.notification));
@@ -23,7 +24,7 @@ let make = _children => {
 
   initialState: () => Loading,
 
-  reducer: (action: action, _state: state) =>
+  reducer: (action: action, state: state) =>
     switch (action) {
     | NotificationsError(err) => ReasonReact.Update(Error(err))
     | NotificationsFetch =>
@@ -47,9 +48,28 @@ let make = _children => {
       )
     | NotificationsFetched(notifications) =>
       ReasonReact.Update(Loaded(notifications))
+    | MarkAsRead(id) =>
+      ReasonReact.UpdateWithSideEffects(
+        switch (state) {
+        | Loaded(state) =>
+          Loaded(
+            state
+            |> Js.Array.filter((item: Trello.notification) => item.id !== id),
+          )
+        | _ => Loading
+        },
+        (
+          _self =>
+            Js.Promise.(
+              Trello.markNotificationAsRead(id)
+              |> then_(_ => true |> resolve)
+              |> ignore
+            )
+        ),
+      )
     },
 
-  render: ({state}) =>
+  render: ({send, state}) =>
     <div className="w-100 w-50-l">
       <Header color="b--light-red" title="Trello" />
       <Card>
@@ -66,6 +86,7 @@ let make = _children => {
                 |> Js.Array.mapi((list, i) =>
                      <ListByDate
                        index=i
+                       key={Js.Dict.keys(groupedByDate)[i]}
                        title={Js.Dict.keys(groupedByDate)[i]}
                        totalItems={
                          Array.length(Js.Dict.values(groupedByDate))
@@ -77,6 +98,7 @@ let make = _children => {
                                 item
                                 isLast={Array.length(list) - 1 === i}
                                 key={item.id}
+                                markAsRead=(_ => send(MarkAsRead(item.id)))
                               />
                             )
                          |> ReasonReact.array

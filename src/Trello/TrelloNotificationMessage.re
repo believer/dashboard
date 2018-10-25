@@ -1,16 +1,45 @@
 let component = ReasonReact.statelessComponent("TrelloNotificationMessage");
 
-let make = (~isLast, ~item: Trello.notification, ~text, ~icon, _children) => {
+let trelloMessage = (item: Trello.notification) =>
+  (
+    switch (item.data.board) {
+    | Some(b) => " " ++ {js|•|js} ++ " " ++ b.name
+    | None => ""
+    }
+  )
+  ++ " "
+  ++ {js|•|js}
+  ++ " "
+  ++ item.creator.fullName
+  ++ " "
+  ++ {js|•|js}
+  ++ " "
+  ++ DateFns.format(item.date, "HH:mm")
+  |> Utils.str;
+
+let make =
+    (
+      ~isLast,
+      ~item: Trello.notification,
+      ~markAsRead,
+      ~text,
+      ~icon,
+      _children,
+    ) => {
   ...component,
   render: _self =>
     <div className={Cn.make(["flex", "mb3"->Cn.ifTrue(!isLast)])}>
-      {
-        icon === "message" ?
-          <IconMessageCircle className="mr4" /> : ReasonReact.null
-      }
-      {
-        icon === "arrow" ? <IconArrowRight className="mr4" /> : ReasonReact.null
-      }
+      <div className="mr4">
+        {
+          switch (icon) {
+          | "message" => <IconMessageCircle />
+          | "arrow" => <IconArrowRight />
+          | "archived" => <IconArchive />
+          | _ => ReasonReact.null
+          }
+        }
+        <IconCheckCircle className="mt2 green" onClick=markAsRead />
+      </div>
       <div>
         <div className="mb2 lh-copy"> {text |> Utils.str} </div>
         <div className="f6 mid-gray">
@@ -26,23 +55,7 @@ let make = (~isLast, ~item: Trello.notification, ~text, ~icon, _children) => {
             | None => ReasonReact.null
             }
           }
-          {
-            (
-              switch (item.data.board) {
-              | Some(b) => " " ++ {js|•|js} ++ " " ++ b.name
-              | None => ""
-              }
-            )
-            ++ " "
-            ++ {js|•|js}
-            ++ " "
-            ++ item.creator.fullName
-            ++ " "
-            ++ {js|•|js}
-            ++ " "
-            |> Utils.str
-          }
-          {DateFns.format(item.date, "HH:mm") |> Utils.str}
+          item->trelloMessage
         </div>
       </div>
     </div>,

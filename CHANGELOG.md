@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.12.0 - 2018-10-25
+
+### Added
+
+- [Trello] Mark as read #12
+
+### Fixed
+
+- [Trello] Fix archived cards
+
 ## 0.11.0 - 2018-10-25
 
 ### Added
