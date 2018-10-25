@@ -2,6 +2,7 @@ const path = require('path')
 const outputDir = path.join(__dirname, 'dist/')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const WebpackPwaManifest = require('webpack-pwa-manifest')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 module.exports = {
   entry: './lib/es6/src/Index.bs.js',
@@ -12,6 +13,13 @@ module.exports = {
     filename: 'index.[hash:8].js',
   },
   plugins: [
+    new CopyWebpackPlugin([
+      {
+        from: path.join(__dirname, './public/images/*'),
+        to: '',
+        flatten: true,
+      },
+    ]),
     new HtmlWebpackPlugin({
       template: 'public/index.html',
     }),
