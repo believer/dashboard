@@ -56,27 +56,35 @@ let make = _children => {
         {
           Trello.Config.hasConfig ?
             switch (state) {
-            | Error(_) =>
-              <div className="tc light-red">
-                {
-                  "Something went wrong. Are the settings up to date?"
-                  |> Utils.str
-                }
-              </div>
-            | Loading =>
-              <div className="tc mid-gray"> {"Loading" |> Utils.str} </div>
+            | Error(_) => <CardError />
+            | Loading => <CardLoading />
             | Loaded(notifications) =>
+              let groupedByDate = Utils.groupTrelloByDate(notifications);
+
               Array.length(notifications) > 0 ?
-                notifications
-                |> Array.mapi((i, item: Trello.notification) =>
-                     <TrelloNotification
-                       item
-                       isLast={Array.length(notifications) - 1 === i}
-                       key={item.id}
-                     />
+                Js.Dict.values(groupedByDate)
+                |> Js.Array.mapi((list, i) =>
+                     <ListByDate
+                       index=i
+                       title={Js.Dict.keys(groupedByDate)[i]}
+                       totalItems={
+                         Array.length(Js.Dict.values(groupedByDate))
+                       }>
+                       {
+                         list
+                         |> Array.mapi((i, item: Trello.notification) =>
+                              <TrelloNotification
+                                item
+                                isLast={Array.length(list) - 1 === i}
+                                key={item.id}
+                              />
+                            )
+                         |> ReasonReact.array
+                       }
+                     </ListByDate>
                    )
                 |> ReasonReact.array :
-                <EmptyState />
+                <EmptyState />;
             } :
             <TrelloMissing />
         }

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.10.0 - 2018-10-25
+
+### Added
+
+- Split notifications by date #8
+
 ## 0.9.0 - 2018-10-25
 
 ### Added

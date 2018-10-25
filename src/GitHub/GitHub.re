@@ -25,7 +25,7 @@ type notification = {
   subject: notificationSubject,
   reason: notificationReason,
   repository: gitRepo,
-  updatedAt: string,
+  date: string,
 };
 
 module Decode = {
@@ -51,7 +51,7 @@ module Decode = {
     id: json |> field("id", string),
     unread: json |> field("unread", bool),
     subject: json |> field("subject", notificationSubject),
-    updatedAt: json |> field("updated_at", string),
+    date: json |> field("updated_at", string),
     repository: json |> field("repository", gitRepo),
     reason:
       switch (json |> field("reason", string)) {

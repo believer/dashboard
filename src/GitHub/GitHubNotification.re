@@ -31,7 +31,7 @@ let make = (~isLast, ~item: GitHub.notification, _children) => {
             ++ " "
             ++ {js|•|js}
             ++ " "
-            ++ DateFns.format(item.updatedAt, "YYYY-MM-DD HH:mm")
+            ++ DateFns.format(item.date, "HH:mm")
             |> Utils.str
           }
         </div>

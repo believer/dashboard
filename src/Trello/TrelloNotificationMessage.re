@@ -42,7 +42,7 @@ let make = (~isLast, ~item: Trello.notification, ~text, ~icon, _children) => {
             ++ " "
             |> Utils.str
           }
-          {DateFns.format(item.date, "YYYY-MM-DD HH:mm") |> Utils.str}
+          {DateFns.format(item.date, "HH:mm") |> Utils.str}
         </div>
       </div>
     </div>,
