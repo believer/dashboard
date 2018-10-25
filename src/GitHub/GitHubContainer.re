@@ -36,9 +36,13 @@ let make = _children => {
           self =>
             Js.Promise.(
               GitHub.getNotifications()
-              |> then_(notifications =>
-                   self.send(NotificationsFetched(notifications)) |> resolve
-                 )
+              |> then_(notifications => {
+                   DocumentTitle.updateTitleWithNotifications(
+                     GitHub.Config.numberOfNotifications,
+                     Trello.Config.numberOfNotifications,
+                   );
+                   self.send(NotificationsFetched(notifications)) |> resolve;
+                 })
               |> catch(_ => self.send(NotificationsError("err")) |> resolve)
               |> ignore
             )
