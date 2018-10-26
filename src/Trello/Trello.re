@@ -1,22 +1,35 @@
+type attachmentType =
+  | Image
+  | UnknownAttachment;
+
 type notificationType =
   | Added
   | AddedToOrganization
-  | Mentioned
-  | Comment
+  | AddAttachment
+  | CardDue
   | ChangeCard
+  | Comment
+  | Mentioned
   | Removed
   | UnknownType;
 
 type trelloList = {name: string};
 type trelloCard = {
-  closed: bool,
+  closed: option(bool),
+  due: option(string),
   shortLink: string,
   name: string,
 };
 
 type creator = {fullName: string};
 
+type trelloAttachment = {
+  attachmentType,
+  url: string,
+};
+
 type notificationData = {
+  attachment: option(trelloAttachment),
   board: option(trelloList),
   card: option(trelloCard),
   text: option(string),
@@ -25,7 +38,7 @@ type notificationData = {
 };
 
 type notification = {
-  creator,
+  creator: option(creator),
   id: string,
   unread: bool,
   date: string,
@@ -38,12 +51,32 @@ module Decode = {
 
   let trelloList = json => {name: json |> field("name", string)};
   let trelloCard = json => {
-    closed: json |> field("closed", bool),
+    closed: json |> optional(field("closed", bool)),
+    due: json |> optional(field("due", string)),
     shortLink: json |> field("shortLink", string),
     name: json |> field("name", string),
   };
 
+  let trelloAttachment = json => {
+    attachmentType:
+      json
+      |> field("url", string)
+      |> Js.String.toLowerCase
+      |> (
+        field =>
+          switch (
+            field
+            |> Js.String.substringToEnd(~from=Js.String.length(field) - 3)
+          ) {
+          | "png" => Image
+          | _ => UnknownAttachment
+          }
+      ),
+    url: json |> field("url", string),
+  };
+
   let data = json => {
+    attachment: json |> optional(field("attachment", trelloAttachment)),
     board: json |> optional(field("board", trelloList)),
     card: json |> optional(field("card", trelloCard)),
     text: json |> optional(field("text", string)),
@@ -58,15 +91,17 @@ module Decode = {
     unread: json |> field("unread", bool),
     date: json |> field("date", string),
     data: json |> field("data", data),
-    creator: json |> field("memberCreator", creator),
+    creator: json |> optional(field("memberCreator", creator)),
     type_:
       switch (json |> field("type", string)) {
+      | "addAttachmentToCard" => AddAttachment
       | "addedToOrganization" => AddedToOrganization
       | "addedToCard" => Added
-      | "mentionedOnCard" => Mentioned
-      | "removedFromCard" => Removed
+      | "cardDueSoon" => CardDue
       | "commentCard" => Comment
       | "changeCard" => ChangeCard
+      | "mentionedOnCard" => Mentioned
+      | "removedFromCard" => Removed
       | _ => UnknownType
       },
   };

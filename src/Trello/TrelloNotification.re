@@ -1,43 +1,61 @@
 let component = ReasonReact.statelessComponent("TrelloNotification");
 
+let trelloMessage = (item: Trello.notification) =>
+  (
+    switch (item.data.board) {
+    | Some(b) => " " ++ {js|•|js} ++ " " ++ b.name
+    | None => ""
+    }
+  )
+  ++ " "
+  ++ {js|•|js}
+  ++ " "
+  ++ (
+    switch (item.creator) {
+    | Some(c) => c.fullName ++ " "
+    | None => ""
+    }
+  )
+  ++ {js|•|js}
+  ++ " "
+  ++ DateFns.format(item.date, "HH:mm")
+  |> Utils.str;
+
 let make = (~isLast, ~item: Trello.notification, ~markAsRead, _children) => {
   ...component,
-  render: _self =>
-    switch (item.data.listBefore, item.data.listAfter) {
-    | (Some(before), Some(after)) =>
-      <TrelloNotificationMessage
-        icon="arrow"
-        item
-        isLast
-        markAsRead
-        text={before.name ++ " -> " ++ after.name}
-      />
-    | (Some(_), None)
-    | (None, Some(_))
-    | (None, None) =>
-      switch (item.data.text) {
-      | Some(text) =>
-        <TrelloNotificationMessage
-          icon="message"
-          isLast
-          item
-          markAsRead
-          text
-        />
-      | None =>
-        switch (item.data.card) {
-        | Some(card) =>
-          card.closed ?
-            <TrelloNotificationMessage
-              icon="archived"
-              isLast
-              item
-              markAsRead
-              text={card.name}
-            /> :
-            ReasonReact.null
-        | None => ReasonReact.null
+  render: _self => {
+    let {data}: Trello.notification = item;
+    let {attachment, card, listBefore, listAfter, text}: Trello.notificationData = data;
+
+    <div className={Cn.make(["flex", "mb3"->Cn.ifTrue(!isLast)])}>
+      <div className="mr4">
+        <TrelloIcon card listAfter listBefore text />
+        <IconCheckCircle className="pointer mt2 green" onClick=markAsRead />
+      </div>
+      <div className="f6">
+        {
+          switch (card) {
+          | Some(c) => <div className="b mb2 lh-copy"> c.name->Utils.str </div>
+          | None => ReasonReact.null
+          }
         }
-      }
-    },
+        <TrelloText attachment listAfter listBefore text />
+        <div className="mid-gray">
+          {
+            switch (card) {
+            | Some(card) =>
+              <a
+                className="link dark-blue hover-hot-pink"
+                href={"https://trello.com/c/" ++ card.shortLink}
+                target="_blank">
+                {"Link" |> Utils.str}
+              </a>
+            | None => ReasonReact.null
+            }
+          }
+          item->trelloMessage
+        </div>
+      </div>
+    </div>;
+  },
 };

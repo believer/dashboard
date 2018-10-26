@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.14.1 - 2018-10-26
+
+### Changed
+
+- [Trello] Icons
+
 ## 0.14.0 - 2018-10-26
 
 ### Added
