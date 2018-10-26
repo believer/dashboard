@@ -89,12 +89,14 @@ module Config = {
     * 1000;
 };
 
+let githubUrl = route => "https://api.github.com" ++ route;
+
 let getNotifications = () =>
   Config.hasConfig ?
     {
       let request =
         Axios.makeConfigWithUrl(
-          ~url="https://api.github.com/notifications",
+          ~url=githubUrl("/notifications"),
           ~_method="GET",
           ~headers={
             "Authorization": "Token " ++ Storage.getConfig("github"),
@@ -113,3 +115,31 @@ let getNotifications = () =>
       );
     } :
     Js.Promise.resolve([||]);
+
+let markNotificationAsRead = id => {
+  let request =
+    Axios.makeConfigWithUrl(
+      ~url=githubUrl("/notifications/threads/" ++ id),
+      ~_method="PATCH",
+      ~headers={"Authorization": "Token " ++ Storage.getConfig("github")},
+      (),
+    );
+
+  Js.Promise.(
+    Axios.request(request) |> then_(response => response |> resolve)
+  );
+};
+
+let markAllNotificationsAsRead = () => {
+  let request =
+    Axios.makeConfigWithUrl(
+      ~url=githubUrl("/notifications"),
+      ~_method="PUT",
+      ~headers={"Authorization": "Token " ++ Storage.getConfig("github")},
+      (),
+    );
+
+  Js.Promise.(
+    Axios.request(request) |> then_(response => response |> resolve)
+  );
+};

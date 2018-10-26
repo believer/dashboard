@@ -61,6 +61,7 @@ let make = _children => {
             Array.length(filteredNotifications) |> string_of_int,
           );
 
+          Trello.Config.setNumberOfNotifications(filteredNotifications);
           Loaded(filteredNotifications);
         | _ => Loading
         },

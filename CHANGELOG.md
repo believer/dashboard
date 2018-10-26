@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.13.0 - 2018-10-26
+
+### Added
+
+- [GitHub] Mark as read #11
+- [GitHub] Mark all as read #11
+
+### Fixed
+
+- [Trello] Save value on marking as read
+
 ## 0.12.2 - 2018-10-26
 
 ### Fixed

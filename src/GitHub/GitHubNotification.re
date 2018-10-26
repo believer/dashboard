@@ -1,18 +1,21 @@
 let component = ReasonReact.statelessComponent("GitHubNotification");
 
-let make = (~isLast, ~item: GitHub.notification, _children) => {
+let make = (~isLast, ~item: GitHub.notification, ~markAsRead, _children) => {
   ...component,
   render: _self =>
     <div className={Cn.make(["flex", "mb3"->Cn.ifTrue(!isLast)])}>
-      {
-        switch (item.subject.type_) {
-        | Commit => <IconGitCommit className="mr4" />
-        | PullRequest => <IconPullRequest className="mr4" />
-        | VulnerabilityAlert => <IconAlertCircle className="mr4 light-red" />
-        | Issue => <IconAlertCircle className="mr4" />
-        | _ => ReasonReact.null
+      <div className="mr4">
+        {
+          switch (item.subject.type_) {
+          | Commit => <IconGitCommit />
+          | PullRequest => <IconPullRequest />
+          | VulnerabilityAlert => <IconAlertCircle className="light-red" />
+          | Issue => <IconAlertCircle />
+          | _ => ReasonReact.null
+          }
         }
-      }
+        <IconCheckCircle className="pointer mt2 green" onClick=markAsRead />
+      </div>
       <div className="lh-copy">
         <a
           className="link dark-blue hover-hot-pink"
