@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.14.0 - 2018-10-26
+
+### Added
+
+- [Trello] Mark all as read
+
 ## 0.13.0 - 2018-10-26
 
 ### Added

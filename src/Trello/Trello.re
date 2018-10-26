@@ -149,3 +149,16 @@ let markNotificationAsRead = id => {
     Axios.request(request) |> then_(response => response |> resolve)
   );
 };
+
+let markAllNotificationsAsRead = () => {
+  let request =
+    Axios.makeConfigWithUrl(
+      ~url=trelloUrl("/notifications/all/read"),
+      ~_method="POST",
+      (),
+    );
+
+  Js.Promise.(
+    Axios.request(request) |> then_(response => response |> resolve)
+  );
+};

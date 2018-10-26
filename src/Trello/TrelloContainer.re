@@ -4,6 +4,7 @@ type state =
   | Loaded(array(Trello.notification));
 
 type action =
+  | MarkAllAsRead
   | MarkAsRead(string)
   | NotificationsError(string)
   | NotificationsFetch
@@ -48,6 +49,28 @@ let make = _children => {
       )
     | NotificationsFetched(notifications) =>
       ReasonReact.Update(Loaded(notifications))
+    | MarkAllAsRead =>
+      ReasonReact.UpdateWithSideEffects(
+        switch (state) {
+        | Loaded(_) =>
+          DocumentTitle.updateTitleWithNotifications(
+            GitHub.Config.numberOfNotifications,
+            "0",
+          );
+
+          Trello.Config.setNumberOfNotifications([||]);
+          Loaded([||]);
+        | _ => Loading
+        },
+        (
+          _self =>
+            Js.Promise.(
+              Trello.markAllNotificationsAsRead()
+              |> then_(_ => true |> resolve)
+              |> ignore
+            )
+        ),
+      )
     | MarkAsRead(id) =>
       ReasonReact.UpdateWithSideEffects(
         switch (state) {
@@ -78,7 +101,17 @@ let make = _children => {
 
   render: ({send, state}) =>
     <div className="w-100 w-50-l">
-      <Header color="b--light-red" title="Trello" />
+      <Header
+        color="b--light-red"
+        hasItems={
+          switch (state) {
+          | Loaded(n) => Array.length(n) > 0
+          | _ => false
+          }
+        }
+        markAllAsRead={_ => send(MarkAllAsRead)}
+        title="Trello"
+      />
       <Card>
         {
           Trello.Config.hasConfig ?
