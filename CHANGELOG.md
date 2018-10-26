@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.12.2 - 2018-10-26
+
+### Fixed
+
+- [Trello] Mark as read updates the title counter
+
 ## 0.12.1 - 2018-10-25
 
 ### Fixed

@@ -52,10 +52,16 @@ let make = _children => {
       ReasonReact.UpdateWithSideEffects(
         switch (state) {
         | Loaded(state) =>
-          Loaded(
+          let filteredNotifications =
             state
-            |> Js.Array.filter((item: Trello.notification) => item.id !== id),
-          )
+            |> Js.Array.filter((item: Trello.notification) => item.id !== id);
+
+          DocumentTitle.updateTitleWithNotifications(
+            GitHub.Config.numberOfNotifications,
+            Array.length(filteredNotifications) |> string_of_int,
+          );
+
+          Loaded(filteredNotifications);
         | _ => Loading
         },
         (
