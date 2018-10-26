@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.15.0 - 2018-10-26
+
+### Added
+
+- Desktop notifications
+
 ## 0.14.1 - 2018-10-26
 
 ### Changed

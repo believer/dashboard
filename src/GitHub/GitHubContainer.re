@@ -43,6 +43,9 @@ let make = _children => {
                      GitHub.Config.numberOfNotifications,
                      Trello.Config.numberOfNotifications,
                    );
+
+                   Notify.sendGitHubNotification(notifications);
+
                    self.send(NotificationsFetched(notifications)) |> resolve;
                  })
               |> catch(_ => self.send(NotificationsError("err")) |> resolve)

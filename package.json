@@ -22,6 +22,7 @@
     "bs-axios": "0.0.39",
     "bs-webapi": "0.13.0",
     "date-fns": "1.29.0",
+    "push.js": "^1.0.9",
     "re-classnames": "3.0.0",
     "re-formality": "1.0.0-beta.3",
     "react": "16.5.2",
