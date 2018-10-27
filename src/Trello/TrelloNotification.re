@@ -53,7 +53,7 @@ let make = (~isLast, ~item: Trello.notification, ~markAsRead, _children) => {
             | None => ReasonReact.null
             }
           }
-          item->trelloMessage
+          {trelloMessage(item)}
         </div>
       </div>
     </div>;

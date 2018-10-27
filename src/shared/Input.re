@@ -12,11 +12,22 @@ let make =
       _children,
     ) => {
   ...component,
-  render: _self =>
-    <div className="mb3">
+  render: _self => {
+    let hasError =
+      switch (error) {
+      | Some(Error(_)) => true
+      | _ => false
+      };
+
+    <div className="mb3 w-50">
       <label className="db b mb2" htmlFor=id> label->Utils.str </label>
       <input
-        className="b--black-10 db w-50 bw1 br2 ph3 pv2"
+        className={
+          Cn.make([
+            "b--black-10 db w-100 ba bw1 br2 ph3 pv2",
+            "b--red"->Cn.ifTrue(hasError),
+          ])
+        }
         type_
         id
         name=id
@@ -25,20 +36,18 @@ let make =
       />
       {
         switch (help) {
-        | Some(text) => <div className="f6 mt1 mid-gray"> ...text </div>
+        | Some(text) =>
+          <div className="f6 w-75 lh-copy mt1 mid-gray"> ...text </div>
         | None => ReasonReact.null
         }
       }
       {
         switch (error) {
         | Some(Error(message)) =>
-          <div className={Cn.make(["form-message", "failure"])}>
-            message->Utils.str
-          </div>
-        | Some(Ok(Valid))
-        | Some(Ok(NoValue))
-        | None => ReasonReact.null
+          <div className="mt1 red w-75 f6"> message->Utils.str </div>
+        | _ => ReasonReact.null
         }
       }
-    </div>,
+    </div>;
+  },
 };

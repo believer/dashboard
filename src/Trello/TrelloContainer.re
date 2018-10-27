@@ -126,28 +126,28 @@ let make = _children => {
 
               Array.length(notifications) > 0 ?
                 Js.Dict.values(groupedByDate)
-                |> Js.Array.mapi((list, i) =>
-                     <ListByDate
-                       index=i
-                       key={Js.Dict.keys(groupedByDate)[i]}
-                       title={Js.Dict.keys(groupedByDate)[i]}
-                       totalItems={
-                         Array.length(Js.Dict.values(groupedByDate))
-                       }>
-                       {
-                         list
-                         |> Array.mapi((i, item: Trello.notification) =>
-                              <TrelloNotification
-                                item
-                                isLast={Array.length(list) - 1 === i}
-                                key={item.id}
-                                markAsRead=(_ => send(MarkAsRead(item.id)))
-                              />
-                            )
-                         |> ReasonReact.array
-                       }
-                     </ListByDate>
-                   )
+                ->Belt.Array.mapWithIndex((i, list) =>
+                    <ListByDate
+                      index=i
+                      key={Js.Dict.keys(groupedByDate)[i]}
+                      title={Js.Dict.keys(groupedByDate)[i]}
+                      totalItems={
+                        Array.length(Js.Dict.values(groupedByDate))
+                      }>
+                      {
+                        list->Belt.Array.mapWithIndex(
+                          (i, item: Trello.notification) =>
+                          <TrelloNotification
+                            item
+                            isLast={Array.length(list) - 1 === i}
+                            key={item.id}
+                            markAsRead=(_ => send(MarkAsRead(item.id)))
+                          />
+                        )
+                        |> ReasonReact.array
+                      }
+                    </ListByDate>
+                  )
                 |> ReasonReact.array :
                 <EmptyState />;
             } :

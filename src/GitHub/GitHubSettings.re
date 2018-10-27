@@ -124,7 +124,7 @@ let make = _children => {
                {
                  switch (form.status) {
                  | Submitted =>
-                   <div className="green mb2"> "Saved"->Utils.str </div>
+                   <SuccessMessage> "Saved"->Utils.str </SuccessMessage>
                  | _ => ReasonReact.null
                  }
                }
