@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.15.1 - 2018-10-27
+
+### Fixed
+
+- [Trello] Error message for settings form
+
 ## 0.15.0 - 2018-10-26
 
 ### Added

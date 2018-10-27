@@ -117,7 +117,7 @@ let make = _children => {
                  "Trello settings"->Utils.str
                </h2>
                <Input
-                 error={SettingsForm.Token->(form.result)}
+                 error={SettingsForm.Username->(form.result)}
                  label="Username"
                  id="username"
                  onChange={
@@ -133,7 +133,7 @@ let make = _children => {
                  value={form.state.username}
                />
                <Input
-                 error={SettingsForm.Token->(form.result)}
+                 error={SettingsForm.Key->(form.result)}
                  label="Key"
                  id="key"
                  help={
@@ -187,7 +187,7 @@ let make = _children => {
                  value={form.state.token}
                />
                <Input
-                 error={SettingsForm.Token->(form.result)}
+                 error={SettingsForm.Interval->(form.result)}
                  label="Update interval (seconds)"
                  id="fetchInterval"
                  onChange={
@@ -205,7 +205,7 @@ let make = _children => {
                {
                  switch (form.status) {
                  | Submitted =>
-                   <div className="green mb2"> "Saved"->Utils.str </div>
+                   <SuccessMessage> "Saved"->Utils.str </SuccessMessage>
                  | _ => ReasonReact.null
                  }
                }
