@@ -2,7 +2,14 @@ open Dom.Storage;
 
 type p;
 
-[@bs.module "push.js"] [@bs.val] external create: string => unit = "create";
+[@bs.module "push.js"] [@bs.val]
+external createWithOptions: (string, Js.t('a)) => unit = "create";
+
+let createNotification = (~title, ~body="", ()) =>
+  createWithOptions(
+    title,
+    {"body": body, "icon": "/logo.png", "timeout": 3000},
+  );
 
 let sendGitHubNotification = notifications => {
   let githubNotified = "github_notified";
@@ -23,14 +30,12 @@ let sendGitHubNotification = notifications => {
 
   switch (Array.length(unseen)) {
   | 0 => ()
-  | 1 => create(unseen[0]##subject##title)
-  | v => create((v |> string_of_int) ++ " new notifications")
-  };
-
-  switch (Array.length(unseen)) {
-  | 0 => ()
   | 1 =>
-    create(unseen[0]##subject##title);
+    createNotification(
+      ~title=unseen[0]##subject##title,
+      ~body=unseen[0]##repository##name,
+      (),
+    );
 
     localStorage
     |> setItem(
@@ -38,7 +43,11 @@ let sendGitHubNotification = notifications => {
          Js.Array.concat(seen, ids) |> Js.Array.joinWith(","),
        );
   | v =>
-    create((v |> string_of_int) ++ " new notifications");
+    createNotification(
+      ~title=(v |> string_of_int) ++ " new notifications",
+      (),
+    );
+
     localStorage
     |> setItem(
          githubNotified,
@@ -67,20 +76,30 @@ let sendTrelloNotification = notifications => {
   switch (Array.length(unseen)) {
   | 0 => ()
   | 1 =>
-    (
+    let title =
       switch (unseen[0]##data##card) {
       | Some(c) => c##name
       | None => "1 new notification"
-      }
-    )
-    |> create;
+      };
+
+    let body =
+      switch (unseen[0]##data##board) {
+      | Some(b) => b##name
+      | None => ""
+      };
+
+    createNotification(~title, ~body, ());
+
     localStorage
     |> setItem(
          trelloNotified,
          Js.Array.concat(seen, ids) |> Js.Array.joinWith(","),
        );
   | v =>
-    create((v |> string_of_int) ++ " new notifications");
+    createNotification(
+      ~title=(v |> string_of_int) ++ " new notifications",
+      (),
+    );
     localStorage
     |> setItem(
          trelloNotified,

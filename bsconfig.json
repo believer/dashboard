@@ -21,8 +21,12 @@
     "re-classnames",
     "re-formality",
     "bs-webapi",
-    "reason-apollo"
+    "reason-apollo",
+    "bs-epitath"
   ],
-  "ppx-flags": ["graphql_ppx/ppx"],
+  "ppx-flags": [
+    "graphql_ppx/ppx",
+    "let-anything/lib/bs/native/let_anything.native"
+  ],
   "refmt": 3
 }

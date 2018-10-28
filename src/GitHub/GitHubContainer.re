@@ -31,107 +31,83 @@ module MarkAllAsRead = [%graphql
 
 module MarkAllAsReadMutation = ReasonApollo.CreateMutation(MarkAllAsRead);
 
+let handleNotifications = response => {
+  let notifications = response##gitHubNotifications;
+  let groupedByDate = Utils.groupByDate(notifications);
+  let hasNotifications = Belt.Array.length(notifications) > 0;
+
+  GitHub.Config.setNumberOfNotifications(notifications);
+  DocumentTitle.updateTitleWithNotifications() |> ignore;
+  Notify.sendGitHubNotification(notifications);
+
+  hasNotifications ?
+    Js.Dict.values(groupedByDate)
+    ->Belt.Array.mapWithIndex((index, list) => {
+        let title = Js.Dict.keys(groupedByDate)[index];
+        let totalItems = Js.Dict.values(groupedByDate)->Belt.Array.length;
+
+        <ListByDate index key=title title totalItems>
+          {
+            list
+            ->Belt.Array.mapWithIndex((i, item) =>
+                <GitHubNotification
+                  item
+                  isLast={Belt.Array.length(list) - 1 === i}
+                  key=item##id
+                />
+              )
+            ->ReasonReact.array
+          }
+        </ListByDate>;
+      })
+    |> ReasonReact.array :
+    <EmptyState />;
+};
+
 let make = _children => {
   ...component,
 
-  render: _self =>
+  render: _self => {
+    let%Epitath {result} =
+      children =>
+        <GetNotificationsQuery pollInterval=GitHub.Config.interval>
+          ...children
+        </GetNotificationsQuery>;
+
+    let hasItems =
+      switch (result) {
+      | Data(response) =>
+        Belt.Array.length(response##gitHubNotifications) > 0
+      | _ => false
+      };
+
     <MarkAllAsReadMutation>
       ...{
            (markAllAsRead, _) =>
              <div className="w-100 w-50-l mr4 mb4">
-               <GetNotificationsQuery pollInterval=GitHub.Config.interval>
-                 ...{
-                      ({result}) =>
-                        <>
-                          <Header
-                            color="b--dark-blue"
-                            hasItems={
-                              switch (result) {
-                              | Data(response) =>
-                                Belt.Array.length(
-                                  response##gitHubNotifications,
-                                )
-                                > 0
-                              | _ => false
-                              }
-                            }
-                            markAllAsRead={
-                              _ =>
-                                markAllAsRead(
-                                  ~refetchQueries=[|"gitHubNotifications"|],
-                                  (),
-                                )
-                                |> ignore
-                            }
-                            title="GitHub"
-                          />
-                          <Card>
-                            {
-                              GitHub.Config.hasConfig ?
-                                switch (result) {
-                                | Loading => <CardLoading />
-                                | Error(error) =>
-                                  <CardError errorMessage=error##message />
-                                | Data(response) =>
-                                  let notifications =
-                                    response##gitHubNotifications;
-                                  let groupedByDate =
-                                    Utils.groupByDate(notifications);
-                                  let hasNotifications =
-                                    Belt.Array.length(notifications) > 0;
-
-                                  GitHub.Config.setNumberOfNotifications(
-                                    notifications,
-                                  );
-
-                                  DocumentTitle.updateTitleWithNotifications()
-                                  |> ignore;
-
-                                  Notify.sendGitHubNotification(
-                                    notifications,
-                                  );
-
-                                  hasNotifications ?
-                                    Js.Dict.values(groupedByDate)
-                                    ->Belt.Array.mapWithIndex((index, list) => {
-                                        let title = Js.Dict.keys(
-                                                      groupedByDate,
-                                                    )[index];
-
-                                        <ListByDate
-                                          index
-                                          key=title
-                                          title
-                                          totalItems={
-                                            Js.Dict.values(groupedByDate)
-                                            ->Belt.Array.length
-                                          }>
-                                          {
-                                            list->Belt.Array.mapWithIndex(
-                                              (i, item) =>
-                                              <GitHubNotification
-                                                item
-                                                isLast={
-                                                  Belt.Array.length(list)
-                                                  - 1 === i
-                                                }
-                                                key=item##id
-                                              />
-                                            )
-                                            |> ReasonReact.array
-                                          }
-                                        </ListByDate>;
-                                      })
-                                    |> ReasonReact.array :
-                                    <EmptyState />;
-                                } :
-                                <GitHubMissing />
-                            }
-                          </Card>
-                        </>
-                    }
-               </GetNotificationsQuery>
+               <Header
+                 color="b--dark-blue"
+                 hasItems
+                 markAllAsRead={
+                   _ =>
+                     markAllAsRead(
+                       ~refetchQueries=[|"gitHubNotifications"|],
+                       (),
+                     )
+                     |> ignore
+                 }
+                 title="GitHub"
+               />
+               <Card>
+                 <Notifications
+                   hasConfig=GitHub.Config.hasConfig
+                   missing={<GitHubMissing />}
+                   result
+                   render=handleNotifications
+                 />
+               </Card>
              </div>
          }
-    </MarkAllAsReadMutation>,
+    </MarkAllAsReadMutation>;
+  },
 };

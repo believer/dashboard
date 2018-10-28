@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.1.0 - 2018-10-28
+
+### Added
+
+- More information and logo in desktop notifications
+
+### Changed
+
+- Refactored with let%anything
+
 ## 1.0.0 - 2018-10-28
 
 ### Added
