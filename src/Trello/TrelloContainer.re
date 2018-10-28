@@ -1,158 +1,156 @@
-type state =
-  | Error(string)
-  | Loading
-  | Loaded(array(Trello.notification));
+let component = ReasonReact.statelessComponent("TrelloContainer");
 
-type action =
-  | MarkAllAsRead
-  | MarkAsRead(string)
-  | NotificationsError(string)
-  | NotificationsFetch
-  | NotificationsFetched(array(Trello.notification));
+module GetNotifications = [%graphql
+  {|
+  query trelloNotifications {
+    trelloNotifications {
+      date
+      id
+      unread
+      type_
+      creator {
+        fullName
+      }
+      data {
+        attachment {
+          attachmentType
+          url
+        }
+        board {
+          name
+        }
+        card {
+          closed
+          name
+          shortLink
+        }
+        listAfter {
+          name
+        }
+        listBefore {
+          name
+        }
+        text
+      }
+    }
+  }
+|}
+];
 
-let component = ReasonReact.reducerComponent("TrelloContainer");
+module GetNotificationsQuery = ReasonApollo.CreateQuery(GetNotifications);
+
+module MarkAllAsRead = [%graphql
+  {|
+    mutation trelloMarkAllAsRead {
+      trelloMarkAllAsRead
+    }
+|}
+];
+
+module MarkAllAsReadMutation = ReasonApollo.CreateMutation(MarkAllAsRead);
 
 let make = _children => {
   ...component,
 
-  didMount: self => {
-    self.send(NotificationsFetch);
-
-    let intervalId =
-      Js.Global.setInterval(() => self.send(NotificationsFetch), 1000 * 60);
-    self.onUnmount(() => Js.Global.clearInterval(intervalId));
-  },
-
-  initialState: () => Loading,
-
-  reducer: (action: action, state: state) =>
-    switch (action) {
-    | NotificationsError(err) => ReasonReact.Update(Error(err))
-    | NotificationsFetch =>
-      ReasonReact.UpdateWithSideEffects(
-        Loading,
-        (
-          self =>
-            Js.Promise.(
-              Trello.getNotifications()
-              |> then_(notifications => {
-                   DocumentTitle.updateTitleWithNotifications(
-                     GitHub.Config.numberOfNotifications,
-                     Trello.Config.numberOfNotifications,
-                   );
-
-                   Notify.sendTrelloNotification(notifications);
-
-                   self.send(NotificationsFetched(notifications)) |> resolve;
-                 })
-              |> catch(_ => self.send(NotificationsError("err")) |> resolve)
-              |> ignore
-            )
-        ),
-      )
-    | NotificationsFetched(notifications) =>
-      ReasonReact.Update(Loaded(notifications))
-    | MarkAllAsRead =>
-      ReasonReact.UpdateWithSideEffects(
-        switch (state) {
-        | Loaded(_) =>
-          DocumentTitle.updateTitleWithNotifications(
-            GitHub.Config.numberOfNotifications,
-            "0",
-          );
-
-          Trello.Config.setNumberOfNotifications([||]);
-          Loaded([||]);
-        | _ => Loading
-        },
-        (
-          _self =>
-            Js.Promise.(
-              Trello.markAllNotificationsAsRead()
-              |> then_(_ => true |> resolve)
-              |> ignore
-            )
-        ),
-      )
-    | MarkAsRead(id) =>
-      ReasonReact.UpdateWithSideEffects(
-        switch (state) {
-        | Loaded(state) =>
-          let filteredNotifications =
-            state
-            |> Js.Array.filter((item: Trello.notification) => item.id !== id);
-
-          DocumentTitle.updateTitleWithNotifications(
-            GitHub.Config.numberOfNotifications,
-            Array.length(filteredNotifications) |> string_of_int,
-          );
-
-          Trello.Config.setNumberOfNotifications(filteredNotifications);
-          Loaded(filteredNotifications);
-        | _ => Loading
-        },
-        (
-          _self =>
-            Js.Promise.(
-              Trello.markNotificationAsRead(id)
-              |> then_(_ => true |> resolve)
-              |> ignore
-            )
-        ),
-      )
-    },
-
-  render: ({send, state}) =>
-    <div className="w-100 w-50-l">
-      <Header
-        color="b--light-red"
-        hasItems={
-          switch (state) {
-          | Loaded(n) => Array.length(n) > 0
-          | _ => false
-          }
-        }
-        markAllAsRead={_ => send(MarkAllAsRead)}
-        title="Trello"
-      />
-      <Card>
-        {
-          Trello.Config.hasConfig ?
-            switch (state) {
-            | Error(_) => <CardError />
-            | Loading => <CardLoading />
-            | Loaded(notifications) =>
-              let groupedByDate = Utils.groupTrelloByDate(notifications);
-
-              Array.length(notifications) > 0 ?
-                Js.Dict.values(groupedByDate)
-                ->Belt.Array.mapWithIndex((i, list) =>
-                    <ListByDate
-                      index=i
-                      key={Js.Dict.keys(groupedByDate)[i]}
-                      title={Js.Dict.keys(groupedByDate)[i]}
-                      totalItems={
-                        Array.length(Js.Dict.values(groupedByDate))
-                      }>
-                      {
-                        list->Belt.Array.mapWithIndex(
-                          (i, item: Trello.notification) =>
-                          <TrelloNotification
-                            item
-                            isLast={Array.length(list) - 1 === i}
-                            key={item.id}
-                            markAsRead=(_ => send(MarkAsRead(item.id)))
+  render: _self =>
+    <MarkAllAsReadMutation>
+      ...{
+           (markAllAsRead, _) =>
+             <div className="w-100 w-50-l">
+               <GetNotificationsQuery pollInterval=Trello.Config.interval>
+                 ...{
+                      ({result}) =>
+                        <>
+                          <Header
+                            color="b--light-red"
+                            hasItems={
+                              switch (result) {
+                              | Data(response) =>
+                                Belt.Array.length(
+                                  response##trelloNotifications,
+                                )
+                                > 0
+                              | _ => false
+                              }
+                            }
+                            markAllAsRead={
+                              _ =>
+                                markAllAsRead(
+                                  ~refetchQueries=[|"trelloNotifications"|],
+                                  (),
+                                )
+                                |> ignore
+                            }
+                            title="Trello"
                           />
-                        )
-                        |> ReasonReact.array
-                      }
-                    </ListByDate>
-                  )
-                |> ReasonReact.array :
-                <EmptyState />;
-            } :
-            <TrelloMissing />
-        }
-      </Card>
-    </div>,
+                          <Card>
+                            {
+                              Trello.Config.hasConfig ?
+                                switch (result) {
+                                | Loading => <CardLoading />
+                                | Error(error) =>
+                                  <CardError errorMessage=error##message />
+                                | Data(response) =>
+                                  let notifications =
+                                    response##trelloNotifications;
+                                  let groupedByDate =
+                                    Utils.groupByDate(notifications);
+                                  let hasNotifications =
+                                    Belt.Array.length(notifications) > 0;
+
+                                  DocumentTitle.updateTitleWithNotifications()
+                                  |> ignore;
+
+                                  Trello.Config.setNumberOfNotifications(
+                                    notifications,
+                                  );
+
+                                  Notify.sendTrelloNotification(
+                                    notifications,
+                                  );
+
+                                  hasNotifications ?
+                                    Js.Dict.values(groupedByDate)
+                                    ->Belt.Array.mapWithIndex((index, list) => {
+                                        let title = Js.Dict.keys(
+                                                      groupedByDate,
+                                                    )[index];
+
+                                        <ListByDate
+                                          index
+                                          key=title
+                                          title
+                                          totalItems={
+                                            Array.length(
+                                              Js.Dict.values(groupedByDate),
+                                            )
+                                          }>
+                                          {
+                                            list->Belt.Array.mapWithIndex(
+                                              (i, item) =>
+                                              <TrelloNotification
+                                                item
+                                                isLast={
+                                                  Belt.Array.length(list)
+                                                  - 1 === i
+                                                }
+                                                key=item##id
+                                              />
+                                            )
+                                            |> ReasonReact.array
+                                          }
+                                        </ListByDate>;
+                                      })
+                                    |> ReasonReact.array :
+                                    <EmptyState />;
+                                } :
+                                <TrelloMissing />
+                            }
+                          </Card>
+                        </>
+                    }
+               </GetNotificationsQuery>
+             </div>
+         }
+    </MarkAllAsReadMutation>,
 };

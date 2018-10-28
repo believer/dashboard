@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.0 - 2018-10-28
+
+### Added
+
+- Rewritten with GraphQL integration
+
 ## 0.15.1 - 2018-10-27
 
 ### Fixed

@@ -12,8 +12,18 @@ let updateTitle = newTitle =>
   | None => ()
   };
 
-let updateTitleWithNotifications = (github, trello) =>
-  switch (github |> int_of_string, trello |> int_of_string) {
-  | (0, 0) => "Dashboard" |> updateTitle
-  | (g, t) => "Dashboard (" ++ (g + t |> string_of_int) ++ ")" |> updateTitle
-  };
+let updateTitleWithNotifications = () =>
+  Js.Global.setTimeout(
+    () =>
+      (
+        switch (
+          Storage.getConfig("github_notifications") |> int_of_string,
+          Storage.getConfig("trello_notifications") |> int_of_string,
+        ) {
+        | (0, 0) => "Dashboard"
+        | (g, t) => "Dashboard (" ++ (g + t |> string_of_int) ++ ")"
+        }
+      )
+      |> updateTitle,
+    500,
+  );

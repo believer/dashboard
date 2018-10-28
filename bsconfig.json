@@ -20,7 +20,9 @@
     "bs-axios",
     "re-classnames",
     "re-formality",
-    "bs-webapi"
+    "bs-webapi",
+    "reason-apollo"
   ],
+  "ppx-flags": ["graphql_ppx/ppx"],
   "refmt": 3
 }

@@ -1,9 +1,19 @@
 let component = ReasonReact.statelessComponent("TrelloNotification");
 
-let trelloMessage = (item: Trello.notification) =>
+module MarkAsRead = [%graphql
+  {|
+    mutation trelloMarkAsRead($id: ID!) {
+      trelloMarkAsRead(id: $id)
+    }
+|}
+];
+
+module MarkAsReadMutation = ReasonApollo.CreateMutation(MarkAsRead);
+
+let trelloMessage = item =>
   (
-    switch (item.data.board) {
-    | Some(b) => " " ++ {js|•|js} ++ " " ++ b.name
+    switch (item##data##board) {
+    | Some(b) => " " ++ {js|•|js} ++ " " ++ b##name
     | None => ""
     }
   )
@@ -11,51 +21,79 @@ let trelloMessage = (item: Trello.notification) =>
   ++ {js|•|js}
   ++ " "
   ++ (
-    switch (item.creator) {
-    | Some(c) => c.fullName ++ " "
+    switch (item##creator) {
+    | Some(c) => c##fullName ++ " "
     | None => ""
     }
   )
   ++ {js|•|js}
   ++ " "
-  ++ DateFns.format(item.date, "HH:mm")
+  ++ DateFns.format(item##date, "HH:mm")
   |> Utils.str;
 
-let make = (~isLast, ~item: Trello.notification, ~markAsRead, _children) => {
+let make = (~isLast, ~item, _children) => {
   ...component,
-  render: _self => {
-    let {data}: Trello.notification = item;
-    let {attachment, card, listBefore, listAfter, text}: Trello.notificationData = data;
+  render: _self =>
+    <MarkAsReadMutation>
+      ...{
+           (mutation, _) => {
+             let markAsRead = MarkAsRead.make(~id=item##id, ());
 
-    <div className={Cn.make(["flex", "mb3"->Cn.ifTrue(!isLast)])}>
-      <div className="mr4">
-        <TrelloIcon card listAfter listBefore text />
-        <IconCheckCircle className="pointer mt2 green" onClick=markAsRead />
-      </div>
-      <div className="f6">
-        {
-          switch (card) {
-          | Some(c) => <div className="b mb2 lh-copy"> c.name->Utils.str </div>
-          | None => ReasonReact.null
-          }
-        }
-        <TrelloText attachment listAfter listBefore text />
-        <div className="mid-gray">
-          {
-            switch (card) {
-            | Some(card) =>
-              <a
-                className="link dark-blue hover-hot-pink"
-                href={"https://trello.com/c/" ++ card.shortLink}
-                target="_blank">
-                {"Link" |> Utils.str}
-              </a>
-            | None => ReasonReact.null
-            }
-          }
-          {trelloMessage(item)}
-        </div>
-      </div>
-    </div>;
-  },
+             <div className={Cn.make(["flex", "mb3"->Cn.ifTrue(!isLast)])}>
+               <div className="mr4">
+                 <TrelloIcon
+                   card=item##data##card
+                   listAfter=item##data##listAfter
+                   listBefore=item##data##listBefore
+                   text=item##data##text
+                 />
+                 <IconCheckCircle
+                   className="pointer mt2 green"
+                   onClick={
+                     _ =>
+                       mutation(
+                         ~variables=markAsRead##variables,
+                         ~refetchQueries=[|"trelloNotifications"|],
+                         (),
+                       )
+                       |> ignore
+                   }
+                 />
+               </div>
+               <div className="f6">
+                 {
+                   switch (item##data##card) {
+                   | Some(card) =>
+                     <div className="b mb2 lh-copy">
+                       {card##name->Utils.str}
+                     </div>
+                   | None => ReasonReact.null
+                   }
+                 }
+                 <TrelloText
+                   attachment=item##data##attachment
+                   listAfter=item##data##listAfter
+                   listBefore=item##data##listBefore
+                   text=item##data##text
+                 />
+                 <div className="mid-gray">
+                   {
+                     switch (item##data##card) {
+                     | Some(card) =>
+                       <a
+                         className="link dark-blue hover-hot-pink"
+                         href={"https://trello.com/c/" ++ card##shortLink}
+                         target="_blank">
+                         {"Link" |> Utils.str}
+                       </a>
+                     | None => ReasonReact.null
+                     }
+                   }
+                   {trelloMessage(item)}
+                 </div>
+               </div>
+             </div>;
+           }
+         }
+    </MarkAsReadMutation>,
 };

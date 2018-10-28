@@ -4,7 +4,7 @@ type p;
 
 [@bs.module "push.js"] [@bs.val] external create: string => unit = "create";
 
-let sendGitHubNotification = (notifications: array(GitHub.notification)) => {
+let sendGitHubNotification = notifications => {
   let githubNotified = "github_notified";
   let seen =
     (
@@ -15,24 +15,22 @@ let sendGitHubNotification = (notifications: array(GitHub.notification)) => {
     )
     |> Js.String.split(",");
 
-  let unseen: array(GitHub.notification) =
+  let unseen =
     notifications
-    |> Js.Array.filter((item: GitHub.notification) =>
-         !Js.Array.includes(item.id, seen)
-       );
+    |> Js.Array.filter(item => !Js.Array.includes(item##id, seen));
 
-  let ids = unseen |> Js.Array.map((item: GitHub.notification) => item.id);
+  let ids = unseen |> Js.Array.map(item => item##id);
 
   switch (Array.length(unseen)) {
   | 0 => ()
-  | 1 => create(unseen[0].subject.title)
+  | 1 => create(unseen[0]##subject##title)
   | v => create((v |> string_of_int) ++ " new notifications")
   };
 
   switch (Array.length(unseen)) {
   | 0 => ()
   | 1 =>
-    create(unseen[0].subject.title);
+    create(unseen[0]##subject##title);
 
     localStorage
     |> setItem(
@@ -49,7 +47,7 @@ let sendGitHubNotification = (notifications: array(GitHub.notification)) => {
   };
 };
 
-let sendTrelloNotification = (notifications: array(Trello.notification)) => {
+let sendTrelloNotification = notifications => {
   let trelloNotified = "trello_notified";
   let seen =
     (
@@ -60,20 +58,18 @@ let sendTrelloNotification = (notifications: array(Trello.notification)) => {
     )
     |> Js.String.split(",");
 
-  let unseen: array(Trello.notification) =
+  let unseen =
     notifications
-    |> Js.Array.filter((item: Trello.notification) =>
-         !Js.Array.includes(item.id, seen)
-       );
+    |> Js.Array.filter(item => !Js.Array.includes(item##id, seen));
 
-  let ids = unseen |> Js.Array.map((item: Trello.notification) => item.id);
+  let ids = unseen |> Js.Array.map(item => item##id);
 
   switch (Array.length(unseen)) {
   | 0 => ()
   | 1 =>
     (
-      switch (unseen[0].data.card) {
-      | Some(c) => c.name
+      switch (unseen[0]##data##card) {
+      | Some(c) => c##name
       | None => "1 new notification"
       }
     )
