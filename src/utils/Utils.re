@@ -1,24 +1,20 @@
 let str = ReasonReact.string;
 
-let groupByDate = arr => {
-  let dict = Js.Dict.empty();
+module Group = {
+  let byDate = input =>
+    input->Belt.Array.reduce(
+      Js.Dict.empty(),
+      (dict, curr) => {
+        let date = DateFns.format(curr##date, "dddd MMM DD");
+        let setValue = Js.Dict.set(dict, date);
+        let current = [|curr|];
 
-  arr
-  |> Js.Array.reduce(
-       (acc, curr) => {
-         let date = DateFns.format(curr##date, "dddd MMM DD");
+        switch (Js.Dict.get(dict, date)) {
+        | None => current->setValue
+        | Some(old) => Belt.Array.concat(old, current)->setValue
+        };
 
-         switch (Js.Dict.get(dict, date)) {
-         | None => Js.Dict.set(dict, date, [|curr|])
-         | Some(oldValue) =>
-           Js.Dict.set(dict, date, oldValue |> Js.Array.concat([|curr|]))
-         };
-
-         acc;
-       },
-       [||],
-     )
-  |> ignore;
-
-  dict;
+        dict;
+      },
+    );
 };

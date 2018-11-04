@@ -51,7 +51,7 @@ module MarkAllAsReadMutation = ReasonApollo.CreateMutation(MarkAllAsRead);
 
 let handleNotifications = response => {
   let notifications = response##trelloNotifications;
-  let groupedByDate = Utils.groupByDate(notifications);
+  let groupedByDate = Utils.Group.byDate(notifications);
   let hasNotifications = Belt.Array.length(notifications) > 0;
 
   DocumentTitle.updateTitleWithNotifications() |> ignore;
