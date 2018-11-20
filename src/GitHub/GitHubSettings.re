@@ -67,23 +67,26 @@ let make = _children => {
         }
       }>
       ...{
-           form =>
+           form => {
+             let handleOnChange = (field, updater, event) =>
+               form.change(
+                 field,
+                 updater(form.state, event->ReactEvent.Form.target##value),
+               );
+
              <form onSubmit={form.submit->Formality.Dom.preventDefault}>
                <h2 className="f3 mt0 dark-gray">
                  "GitHub settings"->Utils.str
                </h2>
                <Input
-                 error={SettingsForm.Token->(form.result)}
+                 error={Token->(form.result)}
                  label="Token"
                  help={
                    Some([|
                      "Generate a token "->Utils.str,
-                     <a
-                       className="link dark-blue hover-hot-pink"
-                       href="https://github.com/settings/tokens"
-                       target="_blank">
+                     <ExternalLink href="https://github.com/settings/tokens">
                        "here"->Utils.str
-                     </a>,
+                     </ExternalLink>,
                      ". It needs permission "->Utils.str,
                      <strong> "notifications"->Utils.str </strong>,
                      " and if you want to see private repos it also needs permission "
@@ -94,14 +97,7 @@ let make = _children => {
                  }
                  id="token"
                  onChange={
-                   event =>
-                     form.change(
-                       SettingsForm.Token,
-                       SettingsForm.TokenField.update(
-                         form.state,
-                         event->ReactEvent.Form.target##value,
-                       ),
-                     )
+                   handleOnChange(Token, SettingsForm.TokenField.update)
                  }
                  value={form.state.token}
                />
@@ -110,14 +106,7 @@ let make = _children => {
                  label="Update interval (seconds)"
                  id="fetchInterval"
                  onChange={
-                   event =>
-                     form.change(
-                       SettingsForm.Interval,
-                       SettingsForm.IntervalField.update(
-                         form.state,
-                         event->ReactEvent.Form.target##value,
-                       ),
-                     )
+                   handleOnChange(Interval, SettingsForm.IntervalField.update)
                  }
                  value={form.state.fetchInterval}
                />
@@ -129,7 +118,8 @@ let make = _children => {
                  }
                }
                <Button type_="submit"> "Save"->Utils.str </Button>
-             </form>
+             </form>;
+           }
          }
     </SettingsFormContainer>,
 };
