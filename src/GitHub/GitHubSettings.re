@@ -102,7 +102,7 @@ let make = _children => {
                  value={form.state.token}
                />
                <Input
-                 error={SettingsForm.Token->(form.result)}
+                 error={Interval->(form.result)}
                  label="Update interval (seconds)"
                  id="fetchInterval"
                  onChange={
