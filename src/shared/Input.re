@@ -2,7 +2,7 @@ let component = ReasonReact.statelessComponent("Input");
 
 let make =
     (
-      ~error: option(Belt.Result.t(Formality__Form.Validation.ok, string)),
+      ~error: option(Belt.Result.t(Formality.ok, string)),
       ~id,
       ~label,
       ~help=None,
