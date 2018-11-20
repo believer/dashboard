@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.1.1 - 2018-11-20
+
+### Fixed
+
+- Fix wrong error for interval in GitHub settings form
+
+### Changed
+
+- Refactored settings forms with simplified `onChange` handling
+- Refactored external links to a component
+
 ## 1.1.0 - 2018-10-28
 
 ### Added
