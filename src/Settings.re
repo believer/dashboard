@@ -10,12 +10,9 @@ let make = _children => {
         ->Utils.str
         <div>
           "Built by "->Utils.str
-          <a
-            className="link dark-blue hover-hot-pink"
-            href="https://github.com/believer"
-            target="_blank">
+          <ExternalLink href="https://github.com/believer">
             "@believer"->Utils.str
-          </a>
+          </ExternalLink>
         </div>
       </div>
       <GitHubSettings />

@@ -80,12 +80,10 @@ let make = (~isLast, ~item, _children) => {
                    {
                      switch (item##data##card) {
                      | Some(card) =>
-                       <a
-                         className="link dark-blue hover-hot-pink"
-                         href={"https://trello.com/c/" ++ card##shortLink}
-                         target="_blank">
-                         {"Link" |> Utils.str}
-                       </a>
+                       <ExternalLink
+                         href={"https://trello.com/c/" ++ card##shortLink}>
+                         "Link"->Utils.str
+                       </ExternalLink>
                      | None => ReasonReact.null
                      }
                    }

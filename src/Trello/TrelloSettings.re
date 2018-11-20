@@ -90,6 +90,14 @@ module SettingsFormContainer = Formality.Make(SettingsForm);
 
 let component = ReasonReact.statelessComponent("TrelloSettings");
 
+let generateHelp = text =>
+  Some([|
+    text->Utils.str,
+    <ExternalLink href="https://trello.com/app-key">
+      "here"->Utils.str
+    </ExternalLink>,
+  |]);
+
 let make = _children => {
   ...component,
   render: _self =>
@@ -111,94 +119,50 @@ let make = _children => {
         }
       }>
       ...{
-           form =>
+           form => {
+             let handleOnChange = (field, updater, event) =>
+               form.change(
+                 field,
+                 updater(form.state, event->ReactEvent.Form.target##value),
+               );
+
              <form onSubmit={form.submit->Formality.Dom.preventDefault}>
                <h2 className="f3 mt0 dark-gray">
                  "Trello settings"->Utils.str
                </h2>
                <Input
-                 error={SettingsForm.Username->(form.result)}
+                 error={Username->(form.result)}
                  label="Username"
                  id="username"
                  onChange={
-                   event =>
-                     form.change(
-                       SettingsForm.Username,
-                       SettingsForm.UsernameField.update(
-                         form.state,
-                         event->ReactEvent.Form.target##value,
-                       ),
-                     )
+                   handleOnChange(Username, SettingsForm.UsernameField.update)
                  }
                  value={form.state.username}
                />
                <Input
-                 error={SettingsForm.Key->(form.result)}
+                 error={Key->(form.result)}
                  label="Key"
                  id="key"
-                 help={
-                   Some([|
-                     "Generate a key "->Utils.str,
-                     <a
-                       className="link dark-blue hover-hot-pink"
-                       href="https://trello.com/app-key"
-                       target="_blank">
-                       {"here" |> Utils.str}
-                     </a>,
-                   |])
-                 }
-                 onChange={
-                   event =>
-                     form.change(
-                       SettingsForm.Key,
-                       SettingsForm.KeyField.update(
-                         form.state,
-                         event->ReactEvent.Form.target##value,
-                       ),
-                     )
-                 }
+                 help={generateHelp("Generate a key ")}
+                 onChange={handleOnChange(Key, SettingsForm.KeyField.update)}
                  value={form.state.key}
                />
                <Input
-                 error={SettingsForm.Token->(form.result)}
+                 error={Token->(form.result)}
                  label="Token"
                  id="token"
-                 help={
-                   Some([|
-                     "Generate a token "->Utils.str,
-                     <a
-                       className="link dark-blue hover-hot-pink"
-                       href="https://trello.com/app-key"
-                       target="_blank">
-                       "here"->Utils.str
-                     </a>,
-                   |])
-                 }
+                 help={generateHelp("Generate a token ")}
                  onChange={
-                   event =>
-                     form.change(
-                       SettingsForm.Token,
-                       SettingsForm.TokenField.update(
-                         form.state,
-                         event->ReactEvent.Form.target##value,
-                       ),
-                     )
+                   handleOnChange(Token, SettingsForm.TokenField.update)
                  }
                  value={form.state.token}
                />
                <Input
-                 error={SettingsForm.Interval->(form.result)}
+                 error={Interval->(form.result)}
                  label="Update interval (seconds)"
                  id="fetchInterval"
                  onChange={
-                   event =>
-                     form.change(
-                       SettingsForm.Interval,
-                       SettingsForm.IntervalField.update(
-                         form.state,
-                         event->ReactEvent.Form.target##value,
-                       ),
-                     )
+                   handleOnChange(Interval, SettingsForm.IntervalField.update)
                  }
                  value={form.state.fetchInterval}
                />
@@ -210,7 +174,8 @@ let make = _children => {
                  }
                }
                <Button type_="submit"> "Save"->Utils.str </Button>
-             </form>
+             </form>;
+           }
          }
     </SettingsFormContainer>,
 };

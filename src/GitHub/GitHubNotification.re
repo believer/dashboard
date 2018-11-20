@@ -44,17 +44,15 @@ let make = (~isLast, ~item, _children) => {
                  />
                </div>
                <div className="lh-copy">
-                 <a
-                   className="link dark-blue hover-hot-pink"
+                 <ExternalLink
                    href={
                      item##subject##url
                      |> Js.String.replace("api.", "")
                      |> Js.String.replace("repos/", "")
                      |> Js.String.replace("pulls/", "pull/")
-                   }
-                   target="_blank">
+                   }>
                    {item##subject##title |> Utils.str}
-                 </a>
+                 </ExternalLink>
                  <div className="f6 mid-gray">
                    {
                      item##repository##name
