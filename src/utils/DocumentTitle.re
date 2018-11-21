@@ -21,7 +21,7 @@ let updateTitleWithNotifications = () =>
           Storage.getConfig("trello_notifications") |> int_of_string,
         ) {
         | (0, 0) => "Dashboard"
-        | (g, t) => "Dashboard (" ++ (g + t |> string_of_int) ++ ")"
+        | (g, t) => "(" ++ (g + t |> string_of_int) ++ ") Dashboard"
         }
       )
       |> updateTitle,

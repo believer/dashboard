@@ -54,22 +54,17 @@ let handleNotifications = response => {
   let groupedByDate = Utils.Group.byDate(notifications);
   let hasNotifications = Belt.Array.length(notifications) > 0;
 
-  DocumentTitle.updateTitleWithNotifications() |> ignore;
-
   Trello.Config.setNumberOfNotifications(notifications);
-
+  DocumentTitle.updateTitleWithNotifications() |> ignore;
   Notify.sendTrelloNotification(notifications);
 
   hasNotifications ?
     Js.Dict.values(groupedByDate)
     ->Belt.Array.mapWithIndex((index, list) => {
         let title = Js.Dict.keys(groupedByDate)[index];
+        let totalItems = Js.Dict.values(groupedByDate)->Belt.Array.length;
 
-        <ListByDate
-          index
-          key=title
-          title
-          totalItems={Array.length(Js.Dict.values(groupedByDate))}>
+        <ListByDate index key=title title totalItems>
           {
             list->Belt.Array.mapWithIndex((i, item) =>
               <TrelloNotification
