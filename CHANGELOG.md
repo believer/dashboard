@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.2 - 2018-11-21
+
+### Changed
+
+- Number of unseen notifications first in title
+
 ## 1.1.1 - 2018-11-20
 
 ### Fixed
