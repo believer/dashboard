@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.3 - 2019-01-02
+
+### Fixed
+
+- Fix some unhandled Trello notifications (added to org)
+
 ## 1.1.2 - 2018-11-21
 
 ### Changed
