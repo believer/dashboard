@@ -1,6 +1,7 @@
 # dashboard
 
 A tiny dashboard for displaying your notifications from GitHub and Trello.
+In production https://dashboard.willcodefor.beer/
 
 ## Get started
 
